@@ -19,6 +19,8 @@ pip install comtypes
 - Export
 - Smile
 
+> :rewind: If you do not work with ArcMap 10.7, you can change /modules/snippets102.py line 36 to your used version
+
 ## Functionality
 The following can be converted:
 
