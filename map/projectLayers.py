@@ -14,20 +14,20 @@ class ProjectLayers:
         pass
 
     @staticmethod
-    def create_project_layers_element(dom, header, layer_list, arc_object_map):
+    def create_project_layers_element(xml_document, header, layer_list, arc_object_map):
         """ This creates a project layer object and its code in the dom
 
         It does not return anything, it just fills the dom.
 
-        :param dom: the Document Object Model
+        :param xml_document: the Document Object Model
         :param header: the header in the dom
         :param layer_list: the list of layers in the dataframe
         :param arc_object_map: the ArcObject Map
         """
         # Check if there are already projectlayers from another dataFrame
-        project_layers_elements = dom.getElementsByTagName('projectlayers')
+        project_layers_elements = xml_document.getElementsByTagName('projectlayers')
         if len(project_layers_elements) == 0:
-            project_layers_element = dom.createElement("projectlayers")
+            project_layers_element = xml_document.createElement("projectlayers")
             header.appendChild(project_layers_element)
 
         arcpy.AddMessage('%1s.\t %1s %1s \t  %1s' % ("Nr", "Name".center(50), "Status".center(33), "Typ"))
@@ -37,25 +37,25 @@ class ProjectLayers:
         for index, layer in enumerate(layer_list):
             if layer.isGroupLayer:
                 arcpy.AddMessage("%2d.\tLayer: %1s " % (index + 1, layer.name.ljust(50)))
-                ProjectLayers.__create_layer_converted_message(layer, index, 'Group', dom)
+                ProjectLayers.__create_layer_converted_message(layer, index, 'Group', xml_document)
                 layer_path = ProjectLayers.__get_layer_path(layer, layer_path)
                 continue
             else:
-                ProjectLayers.__create_layer_element(layer, layer_list, arc_object_map, dom, index, layer_path)
+                ProjectLayers.__create_layer_element(layer, layer_list, arc_object_map, xml_document, index, layer_path)
 
     @staticmethod
-    def __create_layer_converted_message(layer, index, layer_object_type, dom, error_found=False):
+    def __create_layer_converted_message(layer, index, layer_object_type, xml_document, error_found=False):
         """ Create a Message if succeeded or failed - and handles failure
 
         :param layer: the layer its all about
         :param index: its index in the layerlist
         :param layer_object_type: the type of the layer
-        :param dom: the Document Object Model
+        :param xml_document: the Document Object Model
         :param error_found: indicate if error was found - default value is false
         """
         if (layer_object_type == 'unknown') | error_found:
             status = "could not be converted"
-            ProjectLayers.__handle_broken_layer(layer, dom)
+            ProjectLayers.__handle_broken_layer(layer, xml_document)
         else:
             status = "successful converted"
 
@@ -69,13 +69,13 @@ class ProjectLayers:
         )
 
     @staticmethod
-    def __create_layer_element(layer, layer_list, arc_object_map, dom, index, layer_path):
+    def __create_layer_element(layer, layer_list, arc_object_map, xml_document, index, layer_path):
         """ This function creates a layer_object and its content in the DOM
 
         :param layer: the layer its all about
         :param layer_list: the list of layers in the dataframe
         :param arc_object_map: the ArcObject Map
-        :param dom: the Document Object Model
+        :param xml_document: the Document Object Model
         :param index: the index of the layer in the layerlist
         :param layer_path: the layer_path of the layer
         """
@@ -85,22 +85,22 @@ class ProjectLayers:
                              )
             layer_path = ProjectLayers.__get_layer_path(layer, layer_path)
 
-            layer_object = layerObj(layer, arc_layer, dom, layer_list, layer_path)
+            layer_object = layerObj(layer, arc_layer, xml_document, layer_list, layer_path)
 
             layer_object_type = layer_object.get_layer_type()
             print layer_object_type
             base_layer_element = layer_object.create_base_layer()
 
-            dom.createElement(
+            xml_document.createElement(
                 layer_object.attach_layer_type(
                     layer_object_type,
                     base_layer_element
                 )
             )
 
-            ProjectLayers.__create_layer_converted_message(layer, index, layer_object_type, dom)
+            ProjectLayers.__create_layer_converted_message(layer, index, layer_object_type, xml_document)
         except (KeyError, Exception):
-            ProjectLayers.__create_layer_converted_message(layer, index, 'unknown', dom, True)
+            ProjectLayers.__create_layer_converted_message(layer, index, 'unknown', xml_document, True)
 
     @staticmethod
     def __get_layer_path(layer, layer_path):
@@ -158,17 +158,17 @@ class ProjectLayers:
         return longname_layer_list_objects[-1]
 
     @staticmethod
-    def __handle_broken_layer(layer, dom):
+    def __handle_broken_layer(layer, xml_document):
         """ add a layer, which is not convertable, unknown, had errors to the broken_layers_list
             and delete its maplayer element from the dom.
 
         :param layer: the layer its all about
-        :param dom: the Document Object Model
+        :param xml_document: the Document Object Model
         :return:
         """
         brokenLayers.BrokenLayers.broken_layer_list.append(layer)
 
-        map_layer_node = dom.getElementsByTagName('maplayer')[-1]
+        map_layer_node = xml_document.getElementsByTagName('maplayer')[-1]
         parent = map_layer_node.parentNode
         parent.removeChild(map_layer_node)
 
