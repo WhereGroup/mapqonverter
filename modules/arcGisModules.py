@@ -7,9 +7,10 @@ class ArcGisModules:
     def __init__(self):
         pass
 
-    module_carto = GetModule(get_lib_path() + "esriCarto.olb")
-    module_display = GetModule(get_lib_path() + "esriDisplay.olb")
-    module_gdb = GetModule(get_lib_path() + "esriGeoDatabase.olb")
-    module_data_source_raster = GetModule(get_lib_path() + "esriDataSourcesRaster.olb")
-    module_framework = GetModule(get_lib_path() + "esriFramework.olb")
-    module_map_ui = GetModule(get_lib_path() + "esriArcMapUI.olb")
+    lib_path = get_lib_path()
+    module_carto = GetModule(lib_path + "esriCarto.olb")
+    module_display = GetModule(lib_path + "esriDisplay.olb")
+    module_gdb = GetModule(lib_path + "esriGeoDatabase.olb")
+    module_data_source_raster = GetModule(lib_path + "esriDataSourcesRaster.olb")
+    module_framework = GetModule(lib_path + "esriFramework.olb")
+    module_map_ui = GetModule(lib_path + "esriArcMapUI.olb")
