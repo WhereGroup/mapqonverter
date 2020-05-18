@@ -55,7 +55,7 @@ from comtypes.client import CreateObject
 
 from map import brokenLayers
 from map.layerTree import LayerTree
-from modules.snippets102 import type_cast_module
+from modules.functions import type_cast_module
 from modules.arcGisModules import ArcGisModules
 from map.header import create_header
 from map.mapSpatialReferenceSystem import MapSpatialReferenceSystem

@@ -1,6 +1,6 @@
 import re
 
-from modules.snippets102 import type_cast_module
+from modules.functions import type_cast_module
 from modules.arcGisModules import ArcGisModules
 
 

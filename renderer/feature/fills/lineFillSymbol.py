@@ -1,4 +1,4 @@
-from modules.snippets102 import unpack2rgb
+from modules.functions import unpack2rgb
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 from renderer.feature.symbols.subSymbolProvider import SubSymbolProvider

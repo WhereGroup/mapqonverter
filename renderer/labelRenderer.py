@@ -1,6 +1,6 @@
 import random
 
-from modules.snippets102 import type_cast_module, unpack2rgb
+from modules.functions import type_cast_module, unpack2rgb
 from dictionaries.label_dict import labelDict
 from modules.arcGisModules import ArcGisModules
 

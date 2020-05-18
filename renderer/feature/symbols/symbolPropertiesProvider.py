@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.snippets102 import type_cast_module
+from modules.functions import type_cast_module
 from renderer.feature.fills.gradientFillSymbol import FeatureGradientFillSymbol
 from renderer.feature.fills.lineFillSymbol import FeatureLineFillSymbol
 from renderer.feature.fills.markerFillSymbol import FeatureMarkerFillSymbol

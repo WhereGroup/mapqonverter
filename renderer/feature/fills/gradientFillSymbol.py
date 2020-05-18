@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.snippets102 import type_cast_module, unpack2rgb
+from modules.functions import type_cast_module, unpack2rgb
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 

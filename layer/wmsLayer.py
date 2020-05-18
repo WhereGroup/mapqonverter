@@ -1,6 +1,6 @@
 import arcpy
 
-from modules.snippets102 import type_cast_module
+from modules.functions import type_cast_module
 from modules.arcGisModules import ArcGisModules
 from renderer.renderer import Renderer as rendererObj
 

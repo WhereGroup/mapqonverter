@@ -4,7 +4,7 @@ from layer.layer import Layer as layerObj
 import arcpy
 import logging
 from modules.arcGisModules import ArcGisModules
-from modules.snippets102 import type_cast_module
+from modules.functions import type_cast_module
 from map import brokenLayers
 
 

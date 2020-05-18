@@ -1,6 +1,6 @@
 import arcpy
 from comtypes import COMError
-from modules.snippets102 import type_cast_module
+from modules.functions import type_cast_module
 from modules.arcGisModules import ArcGisModules
 from renderer.feature.graduatedColorsRenderer import GraduatedColorsRenderer
 from renderer.feature.symbols.symbolPropertiesProvider import SymbolPropertiesProvider

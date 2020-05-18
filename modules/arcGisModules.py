@@ -1,5 +1,5 @@
 from comtypes.client import GetModule
-from snippets102 import get_lib_path
+from functions import get_lib_path
 
 
 class ArcGisModules:
