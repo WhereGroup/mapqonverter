@@ -35,8 +35,8 @@ class DatabaseLayer:
         for data_source, provider in zip(map_layer_element.getElementsByTagName('datasource'),
                                          map_layer_element.getElementsByTagName('provider')):
             provider.setAttribute("encoding", "UTF-8")
-            provider.appendChild(base.document.createTextNode(provider_typ))
-            datasource_content = base.document.createTextNode("dbname='" + db_name +
+            provider.appendChild(base.xml_document.createTextNode(provider_typ))
+            datasource_content = base.xml_document.createTextNode("dbname='" + db_name +
                                                               "' host=" + host +
                                                               " port=" + port +
                                                               " sslmode=disable" +
@@ -47,7 +47,7 @@ class DatabaseLayer:
                                                               " (geom) sql=" + query)
             data_source.appendChild(datasource_content)
 
-        renderer = rendererObj(base.document, map_layer_element, base.arc_layer, base.layer, "feature")
+        renderer = rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "feature")
         renderer.get_renderer()
 
         if base.layer.showLabels:

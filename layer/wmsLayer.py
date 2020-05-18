@@ -31,12 +31,12 @@ class WMSLayer:
                 in zip(map_layer_element.getElementsByTagName('datasource'),
                        map_layer_element.getElementsByTagName('srid'),
                        map_layer_element.getElementsByTagName('provider')):
-            provider_element.appendChild(base.document.createTextNode("wms"))
+            provider_element.appendChild(base.xml_document.createTextNode("wms"))
             data_source_content = ("crs=EPSG:" + srid_element.firstChild.nodeValue +
                                    "&dpiMode=7&format=image/png&layers=" + base.layer.serviceProperties["Name"] +
                                    "&styles=&url=" + base.layer.serviceProperties["URL"] + "version%3D" +
                                    wms_layer_version)
-            data_source_content = base.document.createTextNode(data_source_content)
+            data_source_content = base.xml_document.createTextNode(data_source_content)
             datasource_element.appendChild(data_source_content)
 
-        rendererObj(base.document, map_layer_element, base.arc_layer, base.layer, "wms").get_renderer()
+        rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "wms").get_renderer()

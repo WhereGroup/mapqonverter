@@ -25,13 +25,13 @@ class FeatureLayer:
         for datasource, provider in zip(map_layer_element.getElementsByTagName('datasource'),
                                         map_layer_element.getElementsByTagName('provider')):
             provider.setAttribute("encoding", "UTF-8")
-            provider.appendChild(base.document.createTextNode("ogr"))
-            datasource.appendChild(base.document.createTextNode(base.layer.dataSource))
+            provider.appendChild(base.xml_document.createTextNode("ogr"))
+            datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
             if len(base.layer.definitionQuery) > 0:
                 datasource.firstChild.nodeValue = datasource.firstChild.nodeValue + "|layerid=0|subset=" \
                                                   + base.layer.definitionQuery
 
-        renderer = rendererObj(base.document, map_layer_element, base.arc_layer, base.layer, "feature")
+        renderer = rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "feature")
         renderer.get_renderer()
 
         if base.layer.showLabels:

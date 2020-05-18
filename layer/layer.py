@@ -8,10 +8,10 @@ from layerSrs import LayerSrs
 
 class Layer:
 
-    def __init__(self, layer, arc_layer, document, layer_list, gdb_path="placeholder"):
+    def __init__(self, layer, arc_layer, xml_document, layer_list, gdb_path="placeholder"):
         self.layer = layer
         self.arc_layer = arc_layer
-        self.document = document
+        self.xml_document = xml_document
         self.gdb_path = gdb_path
         self.layer_list = layer_list
 
@@ -22,9 +22,9 @@ class Layer:
         """
         layer_id = self.layer.longName + str(20190727170816078)
         layer_name = self.layer.name
-        project_layers_element = self.document.getElementsByTagName("projectlayers")[0]
+        project_layers_element = self.xml_document.getElementsByTagName("projectlayers")[0]
 
-        map_layer_element = self.document.createElement("maplayer")
+        map_layer_element = self.xml_document.createElement("maplayer")
         map_layer_element.setAttribute("minScale", "1e+08")
         map_layer_element.setAttribute("maxScale", "0")
         map_layer_element.setAttribute("minLabelScale", "1e+08")
@@ -33,24 +33,24 @@ class Layer:
         map_layer_element.setAttribute("scaleBasedLabelVisibilityFlag", "0")
         project_layers_element.appendChild(map_layer_element)
 
-        id_element = self.document.createElement("id")
-        id_element.appendChild(self.document.createTextNode(layer_id))
+        id_element = self.xml_document.createElement("id")
+        id_element.appendChild(self.xml_document.createTextNode(layer_id))
         map_layer_element.appendChild(id_element)
 
-        data_source_element = self.document.createElement("datasource")
+        data_source_element = self.xml_document.createElement("datasource")
         map_layer_element.appendChild(data_source_element)
 
-        layer_name_element = self.document.createElement("layername")
-        layer_name_content = self.document.createTextNode(layer_name)
+        layer_name_element = self.xml_document.createElement("layername")
+        layer_name_content = self.xml_document.createTextNode(layer_name)
         layer_name_element.appendChild(layer_name_content)
         map_layer_element.appendChild(layer_name_element)
 
-        srs_element = self.document.createElement("srs")
+        srs_element = self.xml_document.createElement("srs")
         map_layer_element.appendChild(srs_element)
 
         LayerSrs.create_layer_srs(self, srs_element)
 
-        provider_element = self.document.createElement("provider")
+        provider_element = self.xml_document.createElement("provider")
         map_layer_element.appendChild(provider_element)
 
         return map_layer_element

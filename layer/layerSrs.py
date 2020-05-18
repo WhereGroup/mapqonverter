@@ -39,7 +39,7 @@ class LayerSrs:
                 annotation['layerEllipsoidacronym'],
                 annotation['layerProjectionacronym'],
                 annotation['layerGeographic']
-            ).create_spatialrefsys(base.document, srs_element)
+            ).create_spatialrefsys(base.xml_document, srs_element)
 
         else:
             try:
@@ -56,10 +56,10 @@ class LayerSrs:
                     srs_input['layerEllipsoidacronym'],
                     srs_input['layerProjectionacronym'],
                     srs_input['layerGeographic']
-                ).create_spatialrefsys(base.document, srs_element)
+                ).create_spatialrefsys(base.xml_document, srs_element)
 
             except RuntimeError:
                 # if crashes take, Project-srs
-                spatialrefsys_element = base.document.getElementsByTagName('spatialrefsys')[0].cloneNode(deep=True)
+                spatialrefsys_element = base.xml_document.getElementsByTagName('spatialrefsys')[0].cloneNode(deep=True)
                 srs_element.appendChild(spatialrefsys_element)
                 logging.info('Default SRS implemented, because of missing data')

@@ -20,12 +20,12 @@ class GDBLayer:
         for datasource, provider in zip(map_layer_element.getElementsByTagName('datasource'),
                                         map_layer_element.getElementsByTagName('provider')):
             provider.setAttribute("encoding", "UTF-8")
-            provider.appendChild(base.document.createTextNode("ogr"))
+            provider.appendChild(base.xml_document.createTextNode("ogr"))
             datasource_path = base.gdb_path
 
             geo_data_base_name = datasource_path.split("\\")[-2]
             geo_data_base_layer_name = datasource_path.split("\\")[-1]
-            ds = base.document.createTextNode("./" + geo_data_base_name + "|layername=" + geo_data_base_layer_name)
+            ds = base.xml_document.createTextNode("./" + geo_data_base_name + "|layername=" + geo_data_base_layer_name)
             datasource.appendChild(ds)
     
-        rendererObj(base.document, map_layer_element, base.arc_layer, base.layer, "gdb").get_renderer()
+        rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "gdb").get_renderer()
