@@ -8,6 +8,6 @@ class NullRenderer:
 
         :param base: the renderer object
         """
-        renderer_element = base.document.createElement("renderer-v2")
+        renderer_element = base.xml_document.createElement("renderer-v2")
         renderer_element.setAttribute("type", "nullSymbol")
         base.map_layer_element.appendChild(renderer_element)

@@ -115,21 +115,21 @@ class LabelRenderer:
         :param map_layer_element: the maplayer-element in the DOM
         :param label_dict: the label dictionary including all the label properties
         """
-        labeling_element = base.document.createElement("labeling")
+        labeling_element = base.xml_document.createElement("labeling")
         labeling_element.setAttribute("type", label_dict['labelValues']['type'])
         map_layer_element.appendChild(labeling_element)
 
         # create settings element
-        settings_element = base.document.createElement("settings")
+        settings_element = base.xml_document.createElement("settings")
 
         if label_dict['labelValues']['type'] == 'rule-based':
             # create rules element
-            rules_element = base.document.createElement("rules")
+            rules_element = base.xml_document.createElement("rules")
             rules_element.setAttribute("key", "{a5f41347-c300-4ee5-b" + str(random.randint(0, 9)) + "fb-08d965baec1e}")
             labeling_element.appendChild(rules_element)
 
             # create rule element
-            rule_element = base.document.createElement("rule")
+            rule_element = base.xml_document.createElement("rule")
             rule_element.setAttribute("key", "{feb232af-8b6c-4" + str(random.randint(10, 99)) + "c-b3e9-f27523dbd2f7}")
             rule_element.setAttribute("filter", '"SymbolID"  = ' + label_dict["labelValues"]["classId"])
             rules_element.appendChild(rule_element)
@@ -138,70 +138,70 @@ class LabelRenderer:
         elif label_dict['labelValues']['type'] == 'simple':
             labeling_element.appendChild(settings_element)
 
-        text_style_element = base.document.createElement("text-style")
+        text_style_element = base.xml_document.createElement("text-style")
         for key, value in zip(
                 label_dict["labelValues"]["text-style"].iterkeys(),
                 label_dict["labelValues"]["text-style"].itervalues()):
             text_style_element.setAttribute(key, value)
         settings_element.appendChild(text_style_element)
 
-        text_buffer_element = base.document.createElement("text-buffer")
+        text_buffer_element = base.xml_document.createElement("text-buffer")
         for key, value in zip(label_dict["labelValues"]["text-buffer"].iterkeys(),
                               label_dict["labelValues"]["text-buffer"].itervalues()):
             text_buffer_element.setAttribute(key, value)
         text_style_element.appendChild(text_buffer_element)
 
-        text_shadow_element = base.document.createElement("shadow")
+        text_shadow_element = base.xml_document.createElement("shadow")
         for key, value in zip(label_dict["labelValues"]["shadow"].iterkeys(),
                               label_dict["labelValues"]["shadow"].itervalues()):
             text_shadow_element.setAttribute(key, value)
         text_style_element.appendChild(text_shadow_element)
 
-        text_background_element = base.document.createElement("background")
+        text_background_element = base.xml_document.createElement("background")
         for key, value in zip(label_dict["labelValues"]["background"].iterkeys(),
                               label_dict["labelValues"]["background"].itervalues()):
             text_background_element.setAttribute(key, value)
         text_style_element.appendChild(text_background_element)
 
-        substitutions_element = base.document.createElement("substitutions")
+        substitutions_element = base.xml_document.createElement("substitutions")
         text_style_element.appendChild(substitutions_element)
 
-        text_format_element = base.document.createElement("text-format")
+        text_format_element = base.xml_document.createElement("text-format")
         for key, value in zip(label_dict["labelValues"]["format"].iterkeys(),
                               label_dict["labelValues"]["format"].itervalues()):
             text_format_element.setAttribute(key, value)
         settings_element.appendChild(text_format_element)
 
-        placement_element = base.document.createElement("placement")
+        placement_element = base.xml_document.createElement("placement")
         for key, value in zip(label_dict["labelValues"]["placement"].iterkeys(),
                               label_dict["labelValues"]["placement"].itervalues()):
             placement_element.setAttribute(key, value)
         settings_element.appendChild(placement_element)
 
-        rendering_element = base.document.createElement("rendering")
+        rendering_element = base.xml_document.createElement("rendering")
         for key, value in zip(label_dict["labelValues"]["rendering"].iterkeys(),
                               label_dict["labelValues"]["rendering"].itervalues()):
             rendering_element.setAttribute(key, value)
         settings_element.appendChild(rendering_element)
 
-        dd_properties_element = base.document.createElement("dd_properties")
+        dd_properties_element = base.xml_document.createElement("dd_properties")
         settings_element.appendChild(dd_properties_element)
 
-        option_element = base.document.createElement("Option")
+        option_element = base.xml_document.createElement("Option")
         option_element.setAttribute('type', 'Map')
         dd_properties_element.appendChild(option_element)
 
-        option_child1_element = base.document.createElement("Option")
+        option_child1_element = base.xml_document.createElement("Option")
         option_child1_element.setAttribute('type', 'QString')
         option_child1_element.setAttribute('name', 'name')
         option_child1_element.setAttribute('value', '')
         option_element.appendChild(option_child1_element)
 
-        option_child2_element = base.document.createElement("Option")
+        option_child2_element = base.xml_document.createElement("Option")
         option_child2_element.setAttribute('name', 'properties')
         option_element.appendChild(option_child2_element)
 
-        option_child3_element = base.document.createElement("Option")
+        option_child3_element = base.xml_document.createElement("Option")
         option_child3_element.setAttribute('type', 'QString')
         option_child3_element.setAttribute('name', 'type')
         option_child3_element.setAttribute('value', 'collection')

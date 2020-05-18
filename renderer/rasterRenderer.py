@@ -15,10 +15,10 @@ class RasterRenderer:
         :param base: is the self of the renderer object
         :return: pipe_element, raster_renderer_element
         """
-        pipe_element = base.document.createElement("pipe")
+        pipe_element = base.xml_document.createElement("pipe")
         base.map_layer_element.appendChild(pipe_element)
 
-        raster_renderer_element = base.document.createElement("rasterrenderer")
+        raster_renderer_element = base.xml_document.createElement("rasterrenderer")
         raster_renderer_element.setAttribute("alphaBand", "-1")
 
         arc_raster_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
@@ -32,39 +32,39 @@ class RasterRenderer:
         raster_renderer_element.setAttribute("opacity", opacity)
         pipe_element.appendChild(raster_renderer_element)
 
-        raster_transparency_element = base.document.createElement("rasterTransparency")
+        raster_transparency_element = base.xml_document.createElement("rasterTransparency")
         raster_renderer_element.appendChild(raster_transparency_element)
 
-        min_max_origin_element = base.document.createElement("minMaxOrigin")
+        min_max_origin_element = base.xml_document.createElement("minMaxOrigin")
         raster_renderer_element.appendChild(min_max_origin_element)
 
-        origin_limits_element = base.document.createElement("limits")
-        origin_limits_element_content = base.document.createTextNode("CumulativeCut")
+        origin_limits_element = base.xml_document.createElement("limits")
+        origin_limits_element_content = base.xml_document.createTextNode("CumulativeCut")
         origin_limits_element.appendChild(origin_limits_element_content)
         min_max_origin_element.appendChild(origin_limits_element)
 
-        origin_extent_element = base.document.createElement("extent")
-        origin_extent_element_content = base.document.createTextNode("WholeRaster")
+        origin_extent_element = base.xml_document.createElement("extent")
+        origin_extent_element_content = base.xml_document.createTextNode("WholeRaster")
         origin_extent_element.appendChild(origin_extent_element_content)
         min_max_origin_element.appendChild(origin_extent_element)
 
-        origin_stat_accuracy_element = base.document.createElement("statAccuracy")
-        origin_stat_accuracy_element_content = base.document.createTextNode("Estimated")
+        origin_stat_accuracy_element = base.xml_document.createElement("statAccuracy")
+        origin_stat_accuracy_element_content = base.xml_document.createTextNode("Estimated")
         origin_stat_accuracy_element.appendChild(origin_stat_accuracy_element_content)
         min_max_origin_element.appendChild(origin_stat_accuracy_element)
 
-        origincumulative_cut_lower_element = base.document.createElement("cumulativeCutLower")
-        origincumulative_cut_lower_element_content = base.document.createTextNode("0.005")
+        origincumulative_cut_lower_element = base.xml_document.createElement("cumulativeCutLower")
+        origincumulative_cut_lower_element_content = base.xml_document.createTextNode("0.005")
         origincumulative_cut_lower_element.appendChild(origincumulative_cut_lower_element_content)
         min_max_origin_element.appendChild(origincumulative_cut_lower_element)
 
-        origincumulative_cut_upper_element = base.document.createElement("cumulativeCutUpper")
-        origincumulative_cut_upper_element_content = base.document.createTextNode("0.995")
+        origincumulative_cut_upper_element = base.xml_document.createElement("cumulativeCutUpper")
+        origincumulative_cut_upper_element_content = base.xml_document.createTextNode("0.995")
         origincumulative_cut_upper_element.appendChild(origincumulative_cut_upper_element_content)
         min_max_origin_element.appendChild(origincumulative_cut_upper_element)
 
-        originstd_dev_factor_element = base.document.createElement("stdDevFactor")
-        originstd_dev_factor_element_content = base.document.createTextNode("2")
+        originstd_dev_factor_element = base.xml_document.createElement("stdDevFactor")
+        originstd_dev_factor_element_content = base.xml_document.createTextNode("2")
         originstd_dev_factor_element.appendChild(originstd_dev_factor_element_content)
         min_max_origin_element.appendChild(originstd_dev_factor_element)
 
@@ -76,12 +76,12 @@ class RasterRenderer:
             brightness_value = "0"
             contrasts_value = "0"
 
-        raster_brightnesscontrast_element = base.document.createElement("brightnesscontrast")
+        raster_brightnesscontrast_element = base.xml_document.createElement("brightnesscontrast")
         raster_brightnesscontrast_element.setAttribute("brightness", brightness_value)
         raster_brightnesscontrast_element.setAttribute("contrast", contrasts_value)
         pipe_element.appendChild(raster_brightnesscontrast_element)
 
-        raster_huesaturation_element = base.document.createElement("huesaturation")
+        raster_huesaturation_element = base.xml_document.createElement("huesaturation")
         raster_huesaturation_element.setAttribute("saturation ", "0")
         raster_huesaturation_element.setAttribute("grayscaleMode", "0")
         raster_huesaturation_element.setAttribute("colorizeRed", "255")
@@ -91,7 +91,7 @@ class RasterRenderer:
         raster_huesaturation_element.setAttribute("colorizeOn", "0")
         pipe_element.appendChild(raster_huesaturation_element)
 
-        raster_resampler_element = base.document.createElement("rasterresampler")
+        raster_resampler_element = base.xml_document.createElement("rasterresampler")
         raster_resampler_element.setAttribute("maxOversampling", "2")
         pipe_element.appendChild(raster_resampler_element)
 
@@ -134,21 +134,21 @@ class RasterRenderer:
         sbg_gradient = re.sub(r'[\s+]', '', renderer.ColorScheme.title())
         raster_renderer_element.setAttribute("gradient", sbg_gradient)
 
-        raster_contrast_enhancement_element = base.document.createElement("contrastEnhancement")
+        raster_contrast_enhancement_element = base.xml_document.createElement("contrastEnhancement")
         raster_renderer_element.appendChild(raster_contrast_enhancement_element)
 
-        sbg_min_value_element = base.document.createElement("minValue")
-        sbg_min_value_element_content = base.document.createTextNode(sbg_min)
+        sbg_min_value_element = base.xml_document.createElement("minValue")
+        sbg_min_value_element_content = base.xml_document.createTextNode(sbg_min)
         sbg_min_value_element.appendChild(sbg_min_value_element_content)
         raster_contrast_enhancement_element.appendChild(sbg_min_value_element)
 
-        sbg_max_value_element = base.document.createElement("maxValue")
-        sbg_max_value_element_content = base.document.createTextNode(sbg_high)
+        sbg_max_value_element = base.xml_document.createElement("maxValue")
+        sbg_max_value_element_content = base.xml_document.createTextNode(sbg_high)
         sbg_max_value_element.appendChild(sbg_max_value_element_content)
         raster_contrast_enhancement_element.appendChild(sbg_max_value_element)
 
-        sbg_algorithm_element = base.document.createElement("algorithm")
-        sbg_algorithm_element_content = base.document.createTextNode("StretchToMinimumMaximum")
+        sbg_algorithm_element = base.xml_document.createElement("algorithm")
+        sbg_algorithm_element_content = base.xml_document.createTextNode("StretchToMinimumMaximum")
         sbg_algorithm_element.appendChild(sbg_algorithm_element_content)
         raster_contrast_enhancement_element.appendChild(sbg_algorithm_element)
 
@@ -203,25 +203,25 @@ class RasterRenderer:
         # create the dom elements
         color = ["placeholder", "red", "green", "blue"]
         for x in range(1, 4):
-            raster_contrast_enhancement_element = base.document.createElement(color[x] + "ContrastEnhancement")
+            raster_contrast_enhancement_element = base.xml_document.createElement(color[x] + "ContrastEnhancement")
             raster_renderer_element.appendChild(raster_contrast_enhancement_element)
 
-            renderer_contrast_min_element = base.document.createElement("minValue")
-            renderer_contrast_min_element_content = base.document.createTextNode(
+            renderer_contrast_min_element = base.xml_document.createElement("minValue")
+            renderer_contrast_min_element_content = base.xml_document.createTextNode(
                 bandstats.get(x, {}).get("min")
             )
             renderer_contrast_min_element.appendChild(renderer_contrast_min_element_content)
             raster_contrast_enhancement_element.appendChild(renderer_contrast_min_element)
 
-            renderer_contrast_max_element = base.document.createElement("maxValue")
-            renderer_contrast_max_element_content = base.document.createTextNode(
+            renderer_contrast_max_element = base.xml_document.createElement("maxValue")
+            renderer_contrast_max_element_content = base.xml_document.createTextNode(
                 bandstats.get(x, {}).get("max")
             )
             renderer_contrast_max_element.appendChild(renderer_contrast_max_element_content)
             raster_contrast_enhancement_element.appendChild(renderer_contrast_max_element)
 
-            renderer_contrast_algorithm_element = base.document.createElement("algorithm")
-            renderer_contrast_algorithm_element_content = base.document.createTextNode(
+            renderer_contrast_algorithm_element = base.xml_document.createElement("algorithm")
+            renderer_contrast_algorithm_element_content = base.xml_document.createTextNode(
                 "StretchToMinimumMaximum"
             )
             renderer_contrast_algorithm_element.appendChild(renderer_contrast_algorithm_element_content)

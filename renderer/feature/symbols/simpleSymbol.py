@@ -13,7 +13,7 @@ class SimpleSymbol:
         :param count: the number of the symbol (just interesting for the naming)
         :param alpha: the transparency level
         """
-        symbol_element = base.document.createElement("symbol")
+        symbol_element = base.xml_document.createElement("symbol")
         symbol_element.setAttribute("alpha", alpha)
         symbol_element.setAttribute("clip_to_extent", "1")
         symbol_element.setAttribute("type", properties['symbol_type'])
@@ -21,7 +21,7 @@ class SimpleSymbol:
         symbols_element.appendChild(symbol_element)
 
         for layer in reversed(properties['layer']):
-            renderer_layer_element = base.document.createElement("layer")
+            renderer_layer_element = base.xml_document.createElement("layer")
             renderer_layer_element.setAttribute("pass", "0")
             renderer_layer_element.setAttribute("enabled", "1")
             renderer_layer_element.setAttribute("locked", "0")
@@ -30,29 +30,29 @@ class SimpleSymbol:
 
             for key, value in layer['dict_symbols'].items():
 
-                symbol_properties_element = base.document.createElement("prop")
+                symbol_properties_element = base.xml_document.createElement("prop")
                 symbol_properties_element.setAttribute("k", str(key))
                 symbol_properties_element.setAttribute("v", str(value))
                 renderer_layer_element.appendChild(symbol_properties_element)
 
-            data_defined_properties_element = base.document.createElement("data_defined_properties")
+            data_defined_properties_element = base.xml_document.createElement("data_defined_properties")
             renderer_layer_element.appendChild(data_defined_properties_element)
 
-            data_defined_option_element = base.document.createElement("Option")
+            data_defined_option_element = base.xml_document.createElement("Option")
             data_defined_option_element.setAttribute("type", "Map")
             data_defined_properties_element.appendChild(data_defined_option_element)
 
-            data_defined_option_value_element = base.document.createElement("Option")
+            data_defined_option_value_element = base.xml_document.createElement("Option")
             data_defined_option_value_element.setAttribute("value", "")
             data_defined_option_value_element.setAttribute("type", "QString")
             data_defined_option_value_element.setAttribute("name", "name")
             data_defined_option_element.appendChild(data_defined_option_value_element)
 
-            data_defined_option_name_element = base.document.createElement("Option")
+            data_defined_option_name_element = base.xml_document.createElement("Option")
             data_defined_option_name_element.setAttribute("name", "properties")
             data_defined_option_element.appendChild(data_defined_option_name_element)
 
-            data_defined_option_collection_element = base.document.createElement("Option")
+            data_defined_option_collection_element = base.xml_document.createElement("Option")
             data_defined_option_collection_element.setAttribute("value", "collection")
             data_defined_option_collection_element.setAttribute("type", "QString")
             data_defined_option_collection_element.setAttribute("name", "type")

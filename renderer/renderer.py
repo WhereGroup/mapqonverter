@@ -9,8 +9,8 @@ from wmsRenderer import WMSRenderer
 
 class Renderer:
 
-    def __init__(self, document, map_layer_element, arc_layer, layer, renderer_type):
-        self.document = document
+    def __init__(self, xml_document, map_layer_element, arc_layer, layer, renderer_type):
+        self.xml_document = xml_document
         self.map_layer_element = map_layer_element
         self.arcLayer = arc_layer
         self.layer = layer

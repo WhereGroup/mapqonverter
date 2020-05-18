@@ -25,14 +25,14 @@ class UniqueValueRenderer:
             symbols.append(unique_renderer.Symbol[each])
 
         # Create categories Element
-        categories_element = base.document.createElement("categories")
+        categories_element = base.xml_document.createElement("categories")
         renderer.appendChild(categories_element)
 
         labels = base.layer.symbology.classLabels
         label_values = base.layer.symbology.classValues
         # Create each category element
         for index, (label, value) in enumerate(zip(labels, label_values)):
-            category_element = base.document.createElement("category")
+            category_element = base.xml_document.createElement("category")
             category_element.setAttribute("render", "true")
             category_element.setAttribute("symbol", str(index))
             category_element.setAttribute("label", label)

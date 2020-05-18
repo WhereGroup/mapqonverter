@@ -19,13 +19,13 @@ class FeatureRenderer:
 
         :param base: is the self of the renderer object
         """
-        renderer = base.document.createElement("renderer-v2")
+        renderer = base.xml_document.createElement("renderer-v2")
         renderer.setAttribute("forceraster", "0")
         renderer.setAttribute("enableorderby", "0")
         renderer.setAttribute("symbollevels", "0")
         base.map_layer_element.appendChild(renderer)
 
-        symbols_element = base.document.createElement("symbols")
+        symbols_element = base.xml_document.createElement("symbols")
         renderer.appendChild(symbols_element)
 
         symbols = []
