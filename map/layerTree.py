@@ -63,7 +63,7 @@ class LayerTree:
 
                 layer_tree_layer.setAttribute("name", layer.name)
 
-                layer_tree_layer.setAttribute("id", layer.longName + str(20190727170816078))
+                layer_tree_layer.setAttribute("id",  "{name}20190727170816078".format(name=layer.longName))
 
                 layer_tree_layer.setAttribute("expanded", "0")
 

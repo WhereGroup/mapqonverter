@@ -84,6 +84,6 @@ class MapLegend:
 
         legendlayer_file_element = xml_document.createElement("legendlayerfile")
         legendlayer_file_element.setAttribute("isInOverview", "0")
-        legendlayer_file_element.setAttribute("layerid", layer.longName + str(20190727170816078))
+        legendlayer_file_element.setAttribute("layerid",  "{name}20190727170816078".format(name=layer.longName))
         legendlayer_file_element.setAttribute("visible", str(int(layer.visible)))
         filegroup_element.appendChild(legendlayer_file_element)

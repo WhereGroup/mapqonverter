@@ -36,7 +36,10 @@ class ProjectLayers:
 
         for index, layer in enumerate(layer_list):
             if layer.isGroupLayer:
-                arcpy.AddMessage("%2d.\tLayer: %1s " % (index + 1, layer.name.ljust(50)))
+                arcpy.AddMessage("{index}.\tLayer: {layer_name} ".format(
+                    index=index + 1,
+                    layer_name=layer.name.ljust(50)
+                ))
                 ProjectLayers.__create_layer_converted_message(layer, index, 'Group', xml_document)
                 layer_path = ProjectLayers.__get_layer_path(layer, layer_path)
                 continue
@@ -60,12 +63,19 @@ class ProjectLayers:
             status = "successful converted"
 
         arcpy.AddMessage(
-            11 * "\t" + "%1s \t - %1s-Layer \n" %
-            (status, layer_object_type.title())
+            "{tabs} {status} \t - {type}-Layer \n".format(
+                tabs=11 * "\t",
+                status=status,
+                type=layer_object_type.title()
+            )
         )
         logging.info(
-            "%2d.\tLayer: %1s %1s \t - %1s \n" %
-            (index + 1, layer.name.ljust(50), status, layer_object_type)
+            "{index}.\tLayer: {layer_name} {status} \t - {type} \n".format(
+                index=index + 1,
+                layer_name=layer.name.ljust(50),
+                status=status,
+                type=layer_object_type
+            )
         )
 
     @staticmethod
@@ -81,8 +91,10 @@ class ProjectLayers:
         """
         arc_layer = ProjectLayers.__get_arc_objects_layer(layer, arc_object_map)
         try:
-            arcpy.AddMessage("%2d.\tLayer: %1s " % (index + 1, layer.name.ljust(50))
-                             )
+            arcpy.AddMessage("{index}.\tLayer: {layer_name} ".format(
+                index=index + 1,
+                layer_name=layer.name.ljust(50)
+            ))
             layer_path = ProjectLayers.__get_layer_path(layer, layer_path)
 
             layer_object = layerObj(layer, arc_layer, xml_document, layer_list, layer_path)

@@ -1,52 +1,7 @@
 #!/usr/bin/python2.7
 # encoding: utf-8
-# Mxd2Qgs ver 3.1
-# Copyright (C) 2011 Allan Maungu
-# Modified by: Peter Heidelbach, Stefan Giese
-# EMAIL: lumtegis (at) gmail.com
-# WEB  : http://geoscripting.blogspot.com
-# WEB  : wheregroup.com
-# Usage : Exporting current ArcMap document layers to QGIS file
-# The resulting file can be opened in QGIS
-# Tested on ArcMap 10.7, Python 2.7.10 and QGIS 3.10.0 'A Coruna'
-# ----------------------------------------------------------
-# Mxd2Qgs ver 2.0
-# Copyright (C) 2011 Allan Maungu
-# Modified by: Shiuli Pervin
-# EMAIL: lumtegis (at) gmail.com
-# WEB  : http://geoscripting.blogspot.com
-# Usage : Exporting current ArcMap document layers to Quantum GIS file
-# The resulting file can be opened in Quantum GIS
-# Tested on ArcMap 10.4, Python 2.7.10 and Quantum GIS 2.18.13 'Las Palmas'
-# ----------------------------------------------------------
-# Mxd2Qgs ver 1.0
-# Copyright (C) 2011 Allan Maungu
-# EMAIL: lumtegis (at) gmail.com
-# WEB  : http://geoscripting.blogspot.com
-# Usage : Exporting current ArcMap document layers to Quantum GIS file
-# The resulting file can be opened in Quantum GIS
-# Tested on ArcMap 10, Python 2.6.5 and Quantum GIS 1.6.0
-# -----------------------------------------------------------
-#
-# licensed under the terms of GNU GPL 2
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# ---------------------------------------------------------------------
 import codecs
-import xml
+import xml.dom.ext
 from xml.dom.minidom import Document
 from zipfile import ZipFile
 import os
@@ -68,6 +23,7 @@ def main():
     """ This is the main script to convert a ArcMap-Project"""
     export_name = arcpy.GetParameterAsText(0)
 
+    export_name = "C:\\Users\\admin.DESKTOP-05JGELS\\Downloads\\arc_qgis\\test101.qgs"
     if export_name.endswith(".qgs") or export_name.endswith(".qgz"):
         export_name_short = export_name[:-4]
 
@@ -98,11 +54,11 @@ def main():
     mxd_path = os.path.join(arc_doc_info.Path)
     mxd = arcpy.mapping.MapDocument(mxd_path)
 
-    print 'Converting mxd........'
+    print 'Start Writing'
 
     for counter, dataframe in enumerate(arcpy.mapping.ListDataFrames(mxd)):
         if counter == 0:
-            print 'Creating MapSpatialReferenceSystem........'
+            print 'Creating MapSpatialReferenceSystem.'
             MapSpatialReferenceSystem.create_map_srs_element(xml_document, header, dataframe)
 
         arc_dataframe = arc_doc.Maps.Item[counter]
@@ -121,6 +77,7 @@ def main():
 
     try:
         xml_document.writexml(qgs_file, indent='  ', addindent='  ', newl='\n', encoding='UTF-8')
+        # xml.dom.ext.PrettyPrint(xml_document, qgs_file, encoding='UTF-8')
         arcpy.AddMessage("Project saved!")
         arcpy.AddMessage('QGIS-File written')
     finally:
@@ -143,6 +100,7 @@ def main():
             print ("Error: %s - %s." % (e.filename, e.strerror))
 
 
+# http://www.ronrothman.com/public/leftbraned/xml-dom-minidom-toprettyxml-and-silly-whitespace/
 def fixed_writexml(self, writer, indent="", addindent="", newl=""):
     """ This functions has fixed formatting for the created XML-File
     :param writer = the file to write to
