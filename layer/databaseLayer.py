@@ -37,14 +37,14 @@ class DatabaseLayer:
             provider.setAttribute("encoding", "UTF-8")
             provider.appendChild(base.xml_document.createTextNode(provider_typ))
             datasource_content = base.xml_document.createTextNode("dbname='" + db_name +
-                                                              "' host=" + host +
-                                                              " port=" + port +
-                                                              " sslmode=disable" +
-                                                              " key='" + description.OIDFieldName +
-                                                              "' type=" + geometry +
-                                                              " srid=" + str(description.Spatialreference.GCSCode) +
-                                                              " table=" + table +
-                                                              " (geom) sql=" + query)
+                                                                  "' host=" + host +
+                                                                  " port=" + port +
+                                                                  " sslmode=disable" +
+                                                                  " key='" + description.OIDFieldName +
+                                                                  "' type=" + geometry +
+                                                                  " srid=" + str(description.Spatialreference.GCSCode) +
+                                                                  " table=" + table +
+                                                                  " (geom) sql=" + query)
             data_source.appendChild(datasource_content)
 
         renderer = rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "feature")
