@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # encoding: utf-8
 import codecs
-import xml.dom.ext
+import xml
 from xml.dom.minidom import Document
 from zipfile import ZipFile
 import os
@@ -23,7 +23,6 @@ def main():
     """ This is the main script to convert a ArcMap-Project"""
     export_name = arcpy.GetParameterAsText(0)
 
-    export_name = "C:\\Users\\admin.DESKTOP-05JGELS\\Downloads\\arc_qgis\\test101.qgs"
     if export_name.endswith(".qgs") or export_name.endswith(".qgz"):
         export_name_short = export_name[:-4]
 
@@ -77,7 +76,6 @@ def main():
 
     try:
         xml_document.writexml(qgs_file, indent='  ', addindent='  ', newl='\n', encoding='UTF-8')
-        # xml.dom.ext.PrettyPrint(xml_document, qgs_file, encoding='UTF-8')
         arcpy.AddMessage("Project saved!")
         arcpy.AddMessage('QGIS-File written')
     finally:
