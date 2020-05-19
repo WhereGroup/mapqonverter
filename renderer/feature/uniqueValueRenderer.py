@@ -20,17 +20,15 @@ class UniqueValueRenderer:
         unique_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
         unique_renderer = type_cast_module(unique_layer.Renderer, ArcGisModules.module_carto.IUniqueValueRenderer)
 
-        # Create Pointer on Symbols for each UniqueValue
         for each in base.layer.symbology.classLabels:
             symbols.append(unique_renderer.Symbol[each])
 
-        # Create categories Element
         categories_element = base.xml_document.createElement("categories")
         renderer.appendChild(categories_element)
 
         labels = base.layer.symbology.classLabels
         label_values = base.layer.symbology.classValues
-        # Create each category element
+
         for index, (label, value) in enumerate(zip(labels, label_values)):
             category_element = base.xml_document.createElement("category")
             category_element.setAttribute("render", "true")

@@ -200,7 +200,6 @@ class RasterRenderer:
                  }
             )
 
-        # create the dom elements
         color = ["placeholder", "red", "green", "blue"]
         for x in range(1, 4):
             raster_contrast_enhancement_element = base.xml_document.createElement(color[x] + "ContrastEnhancement")

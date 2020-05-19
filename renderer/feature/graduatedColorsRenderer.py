@@ -25,11 +25,9 @@ class GraduatedColorsRenderer:
         for each in range(0, base.layer.symbology.numClasses):
             symbols.append(graduated_renderer.Symbol[each])
 
-        # Create ranges Element
         ranges_element = base.xml_document.createElement("ranges")
         renderer.appendChild(ranges_element)
 
-        # Create each range element
         for index, (label, value) in enumerate(
                 zip(base.layer.symbology.classBreakLabels, base.layer.symbology.classBreakValues)):
             range_element = base.xml_document.createElement("range")

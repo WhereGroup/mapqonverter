@@ -119,16 +119,15 @@ class LabelRenderer:
         labeling_element.setAttribute("type", label_dict['labelValues']['type'])
         map_layer_element.appendChild(labeling_element)
 
-        # create settings element
         settings_element = base.xml_document.createElement("settings")
 
         if label_dict['labelValues']['type'] == 'rule-based':
-            # create rules element
+
             rules_element = base.xml_document.createElement("rules")
             rules_element.setAttribute("key", "{a5f41347-c300-4ee5-b" + str(random.randint(0, 9)) + "fb-08d965baec1e}")
             labeling_element.appendChild(rules_element)
 
-            # create rule element
+
             rule_element = base.xml_document.createElement("rule")
             rule_element.setAttribute("key", "{feb232af-8b6c-4" + str(random.randint(10, 99)) + "c-b3e9-f27523dbd2f7}")
             rule_element.setAttribute("filter", '"SymbolID"  = ' + label_dict["labelValues"]["classId"])
