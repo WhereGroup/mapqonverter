@@ -1,7 +1,8 @@
 #!/usr/bin/python2.7
 # encoding: utf-8
 import codecs
-from xml.dom.minidom import Document
+import xml
+from xml.dom.minidom import Document, Node
 from zipfile import ZipFile
 import os
 import arcpy
@@ -74,7 +75,7 @@ def main():
         MapProperties.create_map_properties_element(xml_document, header)
 
     try:
-        qgs_file.write(xml_document.toprettyxml(indent="    "))
+        xml_document.writexml(qgs_file, indent="    ", addindent="    ", newl="\n", encoding="UTF-8")
         arcpy.AddMessage("Project saved!")
         arcpy.AddMessage('QGIS-File written')
     finally:
@@ -96,6 +97,37 @@ def main():
         except OSError as e:
             print ("Error: %s - %s." % (e.filename, e.strerror))
 
+
+def pretty_writexml(self, writer, indent="", addindent="", newline=""):
+    # indent = current indentation
+    # addindent = indentation to add to higher levels
+    # newline = newline string
+    writer.write(indent+"<" + self.tagName)
+
+    attrs = self._get_attributes()
+    a_names = attrs.keys()
+    a_names.sort()
+
+    for a_name in a_names:
+        writer.write(" %s=\"" % a_name)
+        xml.dom.minidom._write_data(writer, attrs[a_name].value)
+        writer.write("\"")
+    if self.childNodes:
+        if self.firstChild.nodeType == Node.TEXT_NODE \
+                and self.childNodes.length == 1:
+            writer.write(">")
+            xml.dom.minidom. _write_data(writer, self.firstChild.data)
+            writer.write("</%s>%s" % (self.tagName, newline))
+        else:
+            writer.write(">%s" % newline)
+            for node in self.childNodes:
+                node.writexml(writer, indent + addindent, addindent, newline)
+            writer.write("%s</%s>%s" % (indent, self.tagName, newline))
+    else:
+        writer.write("/>%s" % newline)
+
+
+xml.dom.minidom.Element.writexml = pretty_writexml
 
 if __name__ == "__main__":
     main()
