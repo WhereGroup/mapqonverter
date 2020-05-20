@@ -21,7 +21,7 @@ class MapLegend:
             legend_element = xml_document.getElementsByTagName("legend")[0]
 
         dataframe_group_layer = xml_document.createElement("legendgroup")
-        dataframe_group_layer.setAttribute("name", str(dataframe.name))
+        dataframe_group_layer.setAttribute("name", unicode(dataframe.name))
         dataframe_group_layer.setAttribute("checked", "Qt::Checked")
         dataframe_group_layer.setAttribute("open", "true")
         legend_element.appendChild(dataframe_group_layer)
@@ -84,6 +84,6 @@ class MapLegend:
 
         legendlayer_file_element = xml_document.createElement("legendlayerfile")
         legendlayer_file_element.setAttribute("isInOverview", "0")
-        legendlayer_file_element.setAttribute("layerid",  "{name}20190727170816078".format(name=layer.longName))
+        legendlayer_file_element.setAttribute("layerid",  u"{name}20190727170816078".format(name=layer.longName))
         legendlayer_file_element.setAttribute("visible", str(int(layer.visible)))
         filegroup_element.appendChild(legendlayer_file_element)

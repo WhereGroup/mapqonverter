@@ -1,3 +1,4 @@
+# coding=utf-8
 from _ctypes import COMError
 
 from layer.layer import Layer as layerObj
@@ -30,13 +31,13 @@ class ProjectLayers:
             project_layers_element = xml_document.createElement("projectlayers")
             header.appendChild(project_layers_element)
 
-        arcpy.AddMessage('%1s.\t %1s %1s \t  %1s' % ("Nr", "Name".center(50), "Status".center(33), "Typ"))
+        arcpy.AddMessage(u'%1s.\t %1s %1s \t  %1s' % ("Nr", "Name".center(50), "Status".center(33), "Typ"))
 
         layer_path = ''
 
         for index, layer in enumerate(layer_list):
             if layer.isGroupLayer:
-                arcpy.AddMessage("{index}.\tLayer: {layer_name} ".format(
+                arcpy.AddMessage(u"{index}.\tLayer: {layer_name} ".format(
                     index=index + 1,
                     layer_name=layer.name.ljust(50)
                 ))
@@ -63,14 +64,14 @@ class ProjectLayers:
             status = "successful converted"
 
         arcpy.AddMessage(
-            "{tabs} {status} \t - {type}-Layer \n".format(
+            u"{tabs} {status} \t - {type}-Layer \n".format(
                 tabs=11 * "\t",
                 status=status,
                 type=layer_object_type.title()
             )
         )
         logging.info(
-            "{index}.\tLayer: {layer_name} {status} \t - {type} \n".format(
+            u"{index}.\tLayer: {layer_name} {status} \t - {type} \n".format(
                 index=index + 1,
                 layer_name=layer.name.ljust(50),
                 status=status,
@@ -89,12 +90,14 @@ class ProjectLayers:
         :param index: the index of the layer in the layerlist
         :param layer_path: the layer_path of the layer
         """
-        arc_layer = ProjectLayers.__get_arc_objects_layer(layer, arc_object_map)
+        arcpy.AddMessage(u"{index}.\tLayer: {layer_name} ".format(
+            index=index + 1,
+            layer_name=layer.name.ljust(50)
+        ))
+
         try:
-            arcpy.AddMessage("{index}.\tLayer: {layer_name} ".format(
-                index=index + 1,
-                layer_name=layer.name.ljust(50)
-            ))
+            arc_layer = ProjectLayers.__get_arc_objects_layer(layer, arc_object_map)
+
             layer_path = ProjectLayers.__get_layer_path(layer, layer_path)
 
             layer_object = layerObj(layer, arc_layer, xml_document, layer_list, layer_path)

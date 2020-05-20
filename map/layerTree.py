@@ -23,7 +23,7 @@ class LayerTree:
             layer_tree_element = dom.getElementsByTagName("layer-tree-group")[0]
 
         dataframe_to_group_layer_element = dom.createElement("layer-tree-group")
-        dataframe_to_group_layer_element.setAttribute("name", str(dataframe.name))
+        dataframe_to_group_layer_element.setAttribute("name", unicode(dataframe.name))
         dataframe_to_group_layer_element.setAttribute("checked", "Qt::Checked")
         dataframe_to_group_layer_element.setAttribute("expanded", "1")
         custom_properties_element = dom.createElement("customproperties")
@@ -63,7 +63,7 @@ class LayerTree:
 
                 layer_tree_layer.setAttribute("name", layer.name)
 
-                layer_tree_layer.setAttribute("id",  "{name}20190727170816078".format(name=layer.longName))
+                layer_tree_layer.setAttribute("id",  u"{name}20190727170816078".format(name=layer.longName))
 
                 layer_tree_layer.setAttribute("expanded", "0")
 
