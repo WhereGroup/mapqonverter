@@ -35,8 +35,7 @@ def main():
 
     arcpy.AddMessage("Scanning Project and collecting Layer-Information")
 
-    # take Infos from opened Arcgis -> to access the arcobjects
-    # a reference to the ArcMap application
+    # take Infos from opened ArcMap-Project -> to access the arcObjects
     arc_app = CreateObject(ArcGisModules.module_framework.AppROT, interface=ArcGisModules.module_framework.IAppROT)
     arc_doc = type_cast_module(arc_app.Item(0).Document, ArcGisModules.module_map_ui.IMxDocument)
     arc_doc_info = type_cast_module(arc_doc, ArcGisModules.module_carto.IDocumentInfo2)
