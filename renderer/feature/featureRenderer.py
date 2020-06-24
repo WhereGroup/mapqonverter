@@ -78,5 +78,5 @@ class FeatureRenderer:
                     (arc_geo_feature_layer.DisplayFeatureClass.ShapeType == 1):
                 SymbolPropertiesProvider.get_point_properties(symbol_properties, iSymbol)
 
-            SimpleSymbol.create_simple_symbol(base, symbols_element, symbol_properties, count, alpha)
+            SimpleSymbol.create_simple_symbol(base.xml_document, symbols_element, symbol_properties, count, alpha)
 
