@@ -10,6 +10,7 @@ from comtypes.client import CreateObject
 
 from map import brokenLayers
 from map.layerTree import LayerTree
+from map.visibilityPresets import VisibilityPresets
 from modules.functions import type_cast_module
 from modules.arcGisModules import ArcGisModules
 from map.header import create_header
@@ -17,6 +18,7 @@ from map.mapSpatialReferenceSystem import MapSpatialReferenceSystem
 from map.mapLegend import MapLegend
 from map.mapProperties import MapProperties
 from map.projectLayers import ProjectLayers
+from layout.layout import Layout
 
 
 def main():
@@ -25,7 +27,8 @@ def main():
 
     if export_name.endswith(".qgs") or export_name.endswith(".qgz"):
         export_name_short = export_name[:-4]
-
+    else:
+        export_name_short = export_name
     qgs_file_name = "{}.qgs".format(export_name_short)
     qgs_file = codecs.open(qgs_file_name, "w", encoding="utf-8")
 
@@ -39,6 +42,9 @@ def main():
     arc_app = CreateObject(ArcGisModules.module_framework.AppROT, interface=ArcGisModules.module_framework.IAppROT)
     arc_doc = type_cast_module(arc_app.Item(0).Document, ArcGisModules.module_map_ui.IMxDocument)
     arc_doc_info = type_cast_module(arc_doc, ArcGisModules.module_carto.IDocumentInfo2)
+
+    if not arc_doc.ActiveView.IsMapActivated:
+        arc_doc.ActiveView = arc_doc.FocusMap
 
     project_path = ""
     try:
@@ -73,6 +79,11 @@ def main():
         LayerTree.create_layertree(xml_document, header, layer_list, dataframe)
         MapProperties.create_map_properties_element(xml_document, header)
 
+    VisibilityPresets.initialize_visibility(xml_document, header, mxd)
+
+    arcpy.AddMessage("Creating Layout")
+    layout = Layout(dom, header, arc_doc, mxd).create_layout()
+
     try:
         xml_document.writexml(qgs_file, indent="    ", addindent="    ", newl="\n", encoding="UTF-8")
         arcpy.AddMessage("Project saved!")
@@ -98,9 +109,12 @@ def main():
 
 
 def pretty_writexml(self, writer, indent="", addindent="", newline=""):
-    # indent = current indentation
-    # addindent = indentation to add to higher levels
-    # newline = newline string
+    """ This functions has fixed formatting for the created XML-File
+    :param writer = the file to write to
+    :param indent = current indentation
+    :param addindent = indentation to add to higher levels
+    :param newline = newline string
+    """
     writer.write(indent+"<" + self.tagName)
 
     attrs = self._get_attributes()
