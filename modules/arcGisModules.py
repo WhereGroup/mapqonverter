@@ -14,3 +14,4 @@ class ArcGisModules:
     module_data_source_raster = GetModule("{lib_path}esriDataSourcesRaster.olb".format(lib_path=lib_path))
     module_framework = GetModule("{lib_path}esriFramework.olb".format(lib_path=lib_path))
     module_map_ui = GetModule("{lib_path}esriArcMapUI.olb".format(lib_path=lib_path))
+    module_geometry = GetModule("{lib_path}esriGeometry.olb".format(lib_path=lib_path))
