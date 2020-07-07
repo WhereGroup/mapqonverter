@@ -1,6 +1,6 @@
 import re
 
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 from modules.arcGisModules import ArcGisModules
 
 
@@ -21,8 +21,8 @@ class RasterRenderer:
         raster_renderer_element = base.xml_document.createElement("rasterrenderer")
         raster_renderer_element.setAttribute("alphaBand", "-1")
 
-        arc_raster_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
-        arc_raster_effect = type_cast_module(arc_raster_layer, ArcGisModules.module_carto.ILayerEffects)
+        arc_raster_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
+        arc_raster_effect = type_cast_arc_object(arc_raster_layer, ArcGisModules.module_carto.ILayerEffects)
 
         try:
             opacity = str(1 - arc_raster_effect.Transparency * 0.01)
@@ -104,8 +104,8 @@ class RasterRenderer:
         :param base: is the self of the renderer object
         :param raster_renderer_element: the raster_renderer_element of the DOM
         """
-        arc_raster_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
-        renderer_name = type_cast_module(arc_raster_layer.Renderer, ArcGisModules.module_carto.IRasterRendererInfo).Name
+        arc_raster_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
+        renderer_name = type_cast_arc_object(arc_raster_layer.Renderer, ArcGisModules.module_carto.IRasterRendererInfo).Name
 
         if arc_raster_layer.BandCount == 1 and renderer_name == "Stretched":
             RasterRenderer._create_stretched_renderer(base, raster_renderer_element, arc_raster_layer)
@@ -124,7 +124,7 @@ class RasterRenderer:
         raster_renderer_element.setAttribute("type", "singlebandgray")
         raster_renderer_element.setAttribute("grayBand", "1")
 
-        renderer = type_cast_module(
+        renderer = type_cast_arc_object(
             arc_raster_layer.Renderer,
             ArcGisModules.module_carto.IRasterStretchColorRampRenderer
         )
@@ -167,10 +167,10 @@ class RasterRenderer:
 
         # find the statistics for the 3 bands
         arc_raster = arc_raster_layer.Raster
-        arc_raster = type_cast_module(arc_raster, ArcGisModules.module_data_source_raster.IRaster2)
+        arc_raster = type_cast_arc_object(arc_raster, ArcGisModules.module_data_source_raster.IRaster2)
         arc_raster_dataset = arc_raster.RasterDataset
-        arc_raster_dataset = type_cast_module(arc_raster_dataset, ArcGisModules.module_gdb.IRasterDataset)
-        arc_raster_band_collection = type_cast_module(
+        arc_raster_dataset = type_cast_arc_object(arc_raster_dataset, ArcGisModules.module_gdb.IRasterDataset)
+        arc_raster_band_collection = type_cast_arc_object(
             arc_raster_dataset,
             ArcGisModules.module_data_source_raster.IRasterBandCollection
         )

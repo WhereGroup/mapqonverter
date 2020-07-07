@@ -1,7 +1,7 @@
 from layoutUuidProvider import LayoutUuidProvider
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 
 
 class LayoutItemFrame(LayoutItem):
@@ -29,7 +29,7 @@ class LayoutItemFrame(LayoutItem):
         """
         arcpy_item = LayoutItem.get_arcpy_layout_element(self, self.layout_item_object)
         LayoutItemFrame.set_size_and_position(self, layout_item_base_element, arcpy_item)
-        frame_properties = type_cast_module(self.map_object, ArcGisModules.module_carto.IFrameProperties)
+        frame_properties = type_cast_arc_object(self.map_object, ArcGisModules.module_carto.IFrameProperties)
 
         border = frame_properties.Border
         background = frame_properties.Background

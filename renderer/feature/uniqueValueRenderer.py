@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 
 
 class UniqueValueRenderer:
@@ -17,8 +17,8 @@ class UniqueValueRenderer:
         renderer.setAttribute("type", "categorizedSymbol")
         renderer.setAttribute("attr", base.layer.symbology.valueField)
 
-        unique_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
-        unique_renderer = type_cast_module(unique_layer.Renderer, ArcGisModules.module_carto.IUniqueValueRenderer)
+        unique_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
+        unique_renderer = type_cast_arc_object(unique_layer.Renderer, ArcGisModules.module_carto.IUniqueValueRenderer)
 
         for each in base.layer.symbology.classLabels:
             symbols.append(unique_renderer.Symbol[each])

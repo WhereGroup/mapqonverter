@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module, unpack2rgb
+from modules.functions import type_cast_arc_object, unpack2rgb
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 
@@ -51,7 +51,7 @@ class FeatureGradientFillSymbol:
         symbol_properties['dict_symbols']['outline_color'] = str(unpack2rgb(i_symbol.Outline.Color.RGB))
         symbol_properties['dict_symbols']['outline_width'] = str(i_symbol.Outline.Width)
 
-        multi_gradient_fill = type_cast_module(i_symbol.ColorRamp, ArcGisModules.module_display.IMultiPartColorRamp)
+        multi_gradient_fill = type_cast_arc_object(i_symbol.ColorRamp, ArcGisModules.module_display.IMultiPartColorRamp)
 
         symbol_properties['dict_symbols']['stops'] = ""
 
@@ -92,8 +92,8 @@ class FeatureGradientFillSymbol:
         :return: a list of colors
         """
         colors = []
-        algorithmic_color_map = type_cast_module(ramp, ArcGisModules.module_display.IAlgorithmicColorRamp)
-        preset_color_ramp = type_cast_module(ramp, ArcGisModules.module_display.IPresetColorRamp)
+        algorithmic_color_map = type_cast_arc_object(ramp, ArcGisModules.module_display.IAlgorithmicColorRamp)
+        preset_color_ramp = type_cast_arc_object(ramp, ArcGisModules.module_display.IPresetColorRamp)
         if algorithmic_color_map:
             colors.append(algorithmic_color_map.FromColor)
             colors.append(algorithmic_color_map.ToColor)

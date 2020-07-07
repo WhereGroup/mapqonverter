@@ -1,6 +1,6 @@
 import arcpy
 from comtypes import COMError
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 from modules.arcGisModules import ArcGisModules
 from renderer.feature.graduatedColorsRenderer import GraduatedColorsRenderer
 from renderer.feature.symbols.symbolPropertiesProvider import SymbolPropertiesProvider
@@ -30,8 +30,8 @@ class FeatureRenderer:
 
         symbols = []
 
-        arc_feature_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IFeatureLayer)
-        arc_geo_feature_layer = type_cast_module(arc_feature_layer, ArcGisModules.module_carto.IGeoFeatureLayer)
+        arc_feature_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IFeatureLayer)
+        arc_geo_feature_layer = type_cast_arc_object(arc_feature_layer, ArcGisModules.module_carto.IGeoFeatureLayer)
         simple_renderer = arc_geo_feature_layer.Renderer
 
         # get a feature, mostly 0 , but can be higher, if using objects from a db -> than takes the id
@@ -59,8 +59,8 @@ class FeatureRenderer:
             GraduatedColorsRenderer.create_graduated_colors_element(base, renderer, symbols)
 
         try:
-            arc_feature_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IFeatureLayer)
-            layer_effects = type_cast_module(arc_feature_layer, ArcGisModules.module_carto.ILayerEffects)
+            arc_feature_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IFeatureLayer)
+            layer_effects = type_cast_arc_object(arc_feature_layer, ArcGisModules.module_carto.ILayerEffects)
             alpha = str(1 - layer_effects.Transparency * 0.01)
         except AttributeError:
             alpha = "1"

@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 
 
 class GraduatedColorsRenderer:
@@ -19,8 +19,8 @@ class GraduatedColorsRenderer:
         renderer.setAttribute("graduatedMethod", "GraduatedColor")
         renderer.setAttribute("attr", base.layer.symbology.valueField)
 
-        graduated_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
-        graduated_renderer = type_cast_module(graduated_layer.Renderer, ArcGisModules.module_carto.IClassBreaksRenderer)
+        graduated_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
+        graduated_renderer = type_cast_arc_object(graduated_layer.Renderer, ArcGisModules.module_carto.IClassBreaksRenderer)
 
         for each in range(0, base.layer.symbology.numClasses):
             symbols.append(graduated_renderer.Symbol[each])

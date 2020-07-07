@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module, unpack2rgb
+from modules.functions import type_cast_arc_object, unpack2rgb
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 from renderer.feature.symbols.subSymbolProvider import SubSymbolProvider
@@ -25,7 +25,7 @@ class FeatureMarkerFillSymbol:
         layer_color = unpack2rgb(i_symbol.MarkerSymbol.Color.RGB)
         symbol_properties['dict_symbols']['color'] = layer_color
 
-        fill_properties = type_cast_module(i_symbol, ArcGisModules.module_display.IFillProperties)
+        fill_properties = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IFillProperties)
 
         symbol_properties['dict_symbols']['displacement_x'] = str(fill_properties.XOffset)
         symbol_properties['dict_symbols']['displacement_y'] = str(fill_properties.YOffset)
