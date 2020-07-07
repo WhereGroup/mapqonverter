@@ -82,7 +82,7 @@ def main():
     VisibilityPresets.initialize_visibility(xml_document, header, mxd)
 
     arcpy.AddMessage("Creating Layout")
-    layout = Layout(dom, header, arc_doc, mxd).create_layout()
+    layout = Layout(xml_document, header, arc_doc, mxd).create_layout()
 
     try:
         xml_document.writexml(qgs_file, indent="    ", addindent="    ", newl="\n", encoding="UTF-8")
