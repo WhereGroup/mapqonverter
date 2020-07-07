@@ -1,4 +1,4 @@
-from modules.functions import unpack2rgb
+from modules.functions import convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 from renderer.feature.symbols.subSymbolProvider import SubSymbolProvider
@@ -23,12 +23,12 @@ class FeatureLineFillSymbol:
         }
 
         symbol_properties['dict_symbols']['angle'] = i_symbol.Angle
-        layer_color = unpack2rgb(i_symbol.LineSymbol.Color.RGB)
+        layer_color = convert_int_to_rgb_string(i_symbol.LineSymbol.Color.RGB)
         symbol_properties['dict_symbols']['color'] = layer_color
         symbol_properties['dict_symbols']['offset'] = i_symbol.Offset
         symbol_properties['dict_symbols']['distance'] = str(i_symbol.Separation)
 
-        symbol_properties['dict_symbols']['outline_color'] = unpack2rgb(i_symbol.Outline.Color.RGB)
+        symbol_properties['dict_symbols']['outline_color'] = convert_int_to_rgb_string(i_symbol.Outline.Color.RGB)
         symbol_properties['dict_symbols']['outline_width'] = i_symbol.Outline.Width
 
         SubSymbolProvider.create_sub_symbol(symbol_properties, 'line')

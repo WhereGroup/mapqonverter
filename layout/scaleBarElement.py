@@ -2,7 +2,7 @@ from dictionaries.layoutItemsDict import dict_units, dict_vertical_position, dic
 from layoutUuidProvider import LayoutUuidProvider
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 
 
 class ScaleBarElement(LayoutItem):
@@ -86,10 +86,10 @@ class ScaleBarElement(LayoutItem):
         double_fill_scale_bar = type_cast_arc_object(scale_bar, ArcGisModules.module_carto.IDoubleFillScaleBar)
 
         if double_fill_scale_bar:
-            fill_color_1 = unpack2rgb(double_fill_scale_bar.FillSymbol1.Color.RGB).split(",")
-            fill_color_2 = unpack2rgb(double_fill_scale_bar.FillSymbol2.Color.RGB).split(",")
+            fill_color_1 = convert_int_to_rgb_string(double_fill_scale_bar.FillSymbol1.Color.RGB).split(",")
+            fill_color_2 = convert_int_to_rgb_string(double_fill_scale_bar.FillSymbol2.Color.RGB).split(",")
         else:
-            fill_color_1 = unpack2rgb(scale_bar.BarColor.RGB).split(',')
+            fill_color_1 = convert_int_to_rgb_string(scale_bar.BarColor.RGB).split(',')
             fill_color_2 = "255,255,255,255"
 
         fill_color_1_element = self.dom.createElement('fillColor')

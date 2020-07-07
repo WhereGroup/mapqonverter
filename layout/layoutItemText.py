@@ -1,5 +1,5 @@
 from layoutItem import LayoutItem
-from modules.functions import unpack2rgb
+from modules.functions import convert_int_to_rgb_string
 from dictionaries.textSymbol import TextSymbol
 
 
@@ -53,7 +53,7 @@ class LayoutItemText(LayoutItem):
         label_font_element.setAttribute("description", label_font_description)
         layout_item_base_element.appendChild(label_font_element)
 
-        font_color = unpack2rgb(font_symbol.Color.RGB).split(",")
+        font_color = convert_int_to_rgb_string(font_symbol.Color.RGB).split(",")
         font_color_element = self.dom.createElement("FontColor")
         font_color_element.setAttribute('red', font_color[0])
         font_color_element.setAttribute('green', font_color[1])

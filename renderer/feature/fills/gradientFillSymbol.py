@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 
@@ -24,7 +24,7 @@ class FeatureGradientFillSymbol:
             'dict_symbols': fill_dict,
         }
 
-        layer_color = unpack2rgb(i_symbol.Color.RGB)
+        layer_color = convert_int_to_rgb_string(i_symbol.Color.RGB)
         symbol_properties['dict_symbols']['color'] = layer_color
 
         angle = i_symbol.GradientAngle + 270.0
@@ -48,7 +48,7 @@ class FeatureGradientFillSymbol:
         symbol_properties['dict_symbols']['discrete'] = "0"
         symbol_properties['dict_symbols']['spread'] = "0"
 
-        symbol_properties['dict_symbols']['outline_color'] = str(unpack2rgb(i_symbol.Outline.Color.RGB))
+        symbol_properties['dict_symbols']['outline_color'] = str(convert_int_to_rgb_string(i_symbol.Outline.Color.RGB))
         symbol_properties['dict_symbols']['outline_width'] = str(i_symbol.Outline.Width)
 
         multi_gradient_fill = type_cast_arc_object(i_symbol.ColorRamp, ArcGisModules.module_display.IMultiPartColorRamp)
@@ -134,16 +134,16 @@ class FeatureGradientFillSymbol:
         for color in colors:
             if radial_fill:
                 if color == colors[0] and ramp_number == multi_gradient_fill.NumberOfRamps:
-                    symbol_properties['dict_symbols']['color1'] = unpack2rgb(color.RGB)
+                    symbol_properties['dict_symbols']['color1'] = convert_int_to_rgb_string(color.RGB)
                 if color == colors[-1] and ramp_number == 1:
-                    symbol_properties['dict_symbols']['color2'] = unpack2rgb(color.RGB)
+                    symbol_properties['dict_symbols']['color2'] = convert_int_to_rgb_string(color.RGB)
             else:
                 if color == colors[0] and ramp_number == 1:
-                    symbol_properties['dict_symbols']['color1'] = unpack2rgb(color.RGB)
+                    symbol_properties['dict_symbols']['color1'] = convert_int_to_rgb_string(color.RGB)
                 if color == colors[-1] and ramp_number == multi_gradient_fill.NumberOfRamps:
-                    symbol_properties['dict_symbols']['color2'] = unpack2rgb(color.RGB)
+                    symbol_properties['dict_symbols']['color2'] = convert_int_to_rgb_string(color.RGB)
 
-            symbol_properties['dict_symbols']['stops'] += "{};{}:".format(color_range, unpack2rgb(color.RGB))
+            symbol_properties['dict_symbols']['stops'] += "{};{}:".format(color_range, convert_int_to_rgb_string(color.RGB))
 
             if color in colors[:-1]:
                 color_range += step_size
@@ -165,8 +165,8 @@ class FeatureGradientFillSymbol:
         :param symbol_properties: symbol_properties as dictionary
         """
         colors = FeatureGradientFillSymbol.get_colors_from_ramp(i_symbol.ColorRamp)
-        first_color = unpack2rgb(colors[0].RGB)
-        second_color = unpack2rgb(colors[1].RGB)
+        first_color = convert_int_to_rgb_string(colors[0].RGB)
+        second_color = convert_int_to_rgb_string(colors[1].RGB)
 
         color1 = first_color
         color2 = second_color
@@ -187,7 +187,7 @@ class FeatureGradientFillSymbol:
         if radial_fill:
             colors.reverse()
         for colorNumber, color in enumerate(colors):
-            symbol_properties['dict_symbols']['stops'] += "{};{}".format(color_range, unpack2rgb(color.RGB))
+            symbol_properties['dict_symbols']['stops'] += "{};{}".format(color_range, convert_int_to_rgb_string(color.RGB))
             if colorNumber != len(colors):
                 symbol_properties['dict_symbols']['stops'] += ":"
             color_range += step_size

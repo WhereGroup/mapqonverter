@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 from renderer.feature.lines.hashLine import HashLine
@@ -70,7 +70,7 @@ class LineSymbol:
 
         basic_line_symbol = type_cast_arc_object(i_symbol, ArcGisModules.module_display.ILineSymbol)
         try:
-            layer_color = unpack2rgb(basic_line_symbol.Color.RGB)
+            layer_color = convert_int_to_rgb_string(basic_line_symbol.Color.RGB)
         except ValueError:
             symbol_properties['dict_symbols']['line_style'] = 'no'
             layer_color = '0,0,0,255'

@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 
@@ -37,7 +37,7 @@ class SimpleMarkerSymbol:
                 symbol_simple_marker.Style]
             if symbol_simple_marker.Outline:
                 symbol_properties['dict_symbols']['outline_style'] = "solid"
-                symbol_properties['dict_symbols']['outline_color'] = unpack2rgb(symbol_simple_marker.OutlineColor.RGB)
+                symbol_properties['dict_symbols']['outline_color'] = convert_int_to_rgb_string(symbol_simple_marker.OutlineColor.RGB)
                 symbol_properties['dict_symbols']['outline_width'] = symbol_simple_marker.OutlineSize
             else:
                 symbol_properties['dict_symbols']['outline_style'] = "no"
@@ -46,7 +46,7 @@ class SimpleMarkerSymbol:
 
         symbol_properties['dict_symbols']['angle'] = symbol_marker.Angle
         try:
-            layer_color = unpack2rgb(symbol_marker.Color.RGB)
+            layer_color = convert_int_to_rgb_string(symbol_marker.Color.RGB)
             if symbol_marker.Color.NullColor:
                 symbol_properties['dict_symbols']['style'] = "no"
         except ValueError:

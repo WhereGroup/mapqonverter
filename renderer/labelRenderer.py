@@ -1,6 +1,6 @@
 import random
 
-from modules.functions import type_cast_arc_object, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 from dictionaries.label_dict import labelDict
 from modules.arcGisModules import ArcGisModules
 
@@ -65,7 +65,7 @@ class LabelRenderer:
         labelDict['labelValues']['placement']['rotationAngle'] = str(formatted_symbol.Angle)
         labelDict['labelValues']['text-style']['fontLetterSpacing'] = str(formatted_symbol.CharacterSpacing)
         # labelDict['labelValues']['text-style']['fontWordSpacing'] = str(formattedSymbol.WordSpacing)
-        labelDict['labelValues']['text-style']['textColor'] = unpack2rgb(formatted_symbol.Color.RGB)
+        labelDict['labelValues']['text-style']['textColor'] = convert_int_to_rgb_string(formatted_symbol.Color.RGB)
         labelDict['labelValues']['text-style']['fontFamily'] = formatted_symbol.Font.Name
         labelDict['labelValues']['text-style']['fontWeight'] = str(formatted_symbol.Font.Weight)
         labelDict['labelValues']['text-style']['fontSize'] = str(formatted_symbol.Size)
@@ -80,10 +80,10 @@ class LabelRenderer:
                 formatted_symbol.Background,
                 ArcGisModules.module_display.ITextMargins
             )
-            labelDict['labelValues']['background']['shapeFillColor'] = unpack2rgb(
+            labelDict['labelValues']['background']['shapeFillColor'] = convert_int_to_rgb_string(
                 formatted_symbol_callout.Border.Color.RGB
             )
-            labelDict['labelValues']['background']['shapeBorderColor'] = unpack2rgb(
+            labelDict['labelValues']['background']['shapeBorderColor'] = convert_int_to_rgb_string(
                 formatted_symbol_callout.Border.Outline.Color.RGB
             )
             labelDict['labelValues']['background']['shapeBorderWidth'] = str(
@@ -103,7 +103,7 @@ class LabelRenderer:
         else:
             labelDict['labelValues']['text-style']['namedStyle'] = "Standard"
 
-        labelDict['labelValues']['shadow']['shadowColor'] = unpack2rgb(formatted_symbol.ShadowColor.RGB)
+        labelDict['labelValues']['shadow']['shadowColor'] = convert_int_to_rgb_string(formatted_symbol.ShadowColor.RGB)
 
         return labelDict
 

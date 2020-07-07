@@ -1,15 +1,16 @@
 import winreg
 
 
-def unpack2rgb(rgb_long):
-    """ This function converts a RGB-Long value to a Standard RGB-Code
+def convert_int_to_rgb_string(rgb_int):
+    """ This function converts a RGB-Int value to a Standard RGB-String
+        The Alpha Value is fixed.
 
-    :param rgb_long: the RGB-Value as long
+    :param rgb_int: the RGB-Value as Integer
     :return: Standard RGB-Values as String 
     """
-    red = rgb_long & 255
-    green = (rgb_long >> 8) & 255
-    blue = (rgb_long >> 16) & 255
+    red = rgb_int & 255
+    green = (rgb_int >> 8) & 255
+    blue = (rgb_int >> 16) & 255
     result = "{},{},{},255".format(str(red), str(green), str(blue))
     try:
         return result
