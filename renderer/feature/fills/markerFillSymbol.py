@@ -27,10 +27,10 @@ class FeatureMarkerFillSymbol:
 
         fill_properties = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IFillProperties)
 
-        symbol_properties['dict_symbols']['displacement_x'] = str(fill_properties.XOffset)
-        symbol_properties['dict_symbols']['displacement_y'] = str(fill_properties.YOffset)
-        symbol_properties['dict_symbols']['displacement_x_unit'] = "Pixel"
-        symbol_properties['dict_symbols']['displacement_y_unit'] = "Pixel"
+        symbol_properties['dict_symbols']['offset_x'] = str(fill_properties.XOffset)
+        symbol_properties['dict_symbols']['offset_y'] = str(fill_properties.YOffset)
+        symbol_properties['dict_symbols']['offset_x_unit'] = "Pixel"
+        symbol_properties['dict_symbols']['offset_y_unit'] = "Pixel"
 
         symbol_properties['dict_symbols']['distance_x'] = str(fill_properties.XSeparation)
         symbol_properties['dict_symbols']['distance_y'] = str(fill_properties.YSeparation)
