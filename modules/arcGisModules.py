@@ -1,5 +1,5 @@
 from comtypes.client import GetModule
-from functions import get_lib_path
+from functions import get_arc_object_library_path
 
 
 class ArcGisModules:
@@ -7,7 +7,7 @@ class ArcGisModules:
     def __init__(self):
         pass
 
-    lib_path = get_lib_path()
+    lib_path = get_arc_object_library_path()
     module_carto = GetModule("{lib_path}esriCarto.olb".format(lib_path=lib_path))
     module_display = GetModule("{lib_path}esriDisplay.olb".format(lib_path=lib_path))
     module_gdb = GetModule("{lib_path}esriGeoDatabase.olb".format(lib_path=lib_path))

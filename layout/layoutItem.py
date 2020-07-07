@@ -5,7 +5,7 @@ from layoutUuidProvider import LayoutUuidProvider
 from zValueProvider import ZValueProvider
 from layoutItemPropertiesProvider import LayoutItemPropertiesProvider
 from modules.arcGisModules import ArcGisModules
-from modules.functions import unpack2rgb, type_cast_module
+from modules.functions import convert_int_to_rgb_string, type_cast_arc_object
 
 
 class LayoutItem:
@@ -85,7 +85,7 @@ class LayoutItem:
         :param frame_color: the color of the frame, default is black
         :return:
         """
-        frame_colors = unpack2rgb(frame_color).split(",")
+        frame_colors = convert_int_to_rgb_string(frame_color).split(",")
         frame_color_element = self.dom.createElement("FrameColor")
         frame_color_element.setAttribute('red', frame_colors[0])
         frame_color_element.setAttribute('green', frame_colors[1])
@@ -100,7 +100,7 @@ class LayoutItem:
         :param background_color: the color of the background, default is white
         :return:
         """
-        background_colors = unpack2rgb(background_color).split(",")
+        background_colors = convert_int_to_rgb_string(background_color).split(",")
         background_color_element = self.dom.createElement("BackgroundColor")
         background_color_element.setAttribute('red', background_colors[0])
         background_color_element.setAttribute('green', background_colors[1])
@@ -135,7 +135,7 @@ class LayoutItem:
         :return: Boolean if the arcpy item is the same as the compared ArcObject
         """
         result = False
-        i_element = type_cast_module(arc_object_item, ArcGisModules.module_carto.IElement)
+        i_element = type_cast_arc_object(arc_object_item, ArcGisModules.module_carto.IElement)
 
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
@@ -210,8 +210,8 @@ class LayoutItem:
         :param background: the background_object as arcObject
         :param layout_item_base_element: the item layout in the DOM
         """
-        frame_border_symbol = type_cast_module(border, ArcGisModules.module_carto.ISymbolBorder)
-        frame_background_symbol = type_cast_module(
+        frame_border_symbol = type_cast_arc_object(border, ArcGisModules.module_carto.ISymbolBorder)
+        frame_background_symbol = type_cast_arc_object(
             background,
             ArcGisModules.module_carto.ISymbolBackground
         )

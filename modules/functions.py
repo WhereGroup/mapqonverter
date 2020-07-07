@@ -1,15 +1,16 @@
 import winreg
 
 
-def unpack2rgb(rgb_long):
-    """ This function converts a RGB-Long value to a Standard RGB-Code
+def convert_int_to_rgb_string(rgb_int):
+    """ This function converts a RGB-Int value to a Standard RGB-String
+        The Alpha Value is fixed.
 
-    :param rgb_long: the RGB-Value as long
+    :param rgb_int: the RGB-Value as Integer
     :return: Standard RGB-Values as String 
     """
-    red = rgb_long & 255
-    green = (rgb_long >> 8) & 255
-    blue = (rgb_long >> 16) & 255
+    red = rgb_int & 255
+    green = (rgb_int >> 8) & 255
+    blue = (rgb_int >> 16) & 255
     result = "{},{},{},255".format(str(red), str(green), str(blue))
     try:
         return result
@@ -17,13 +18,13 @@ def unpack2rgb(rgb_long):
         return "255, 255, 255, 255"
 
 
-def get_lib_path():
+def get_arc_object_library_path():
     """This function finds ArcMap in the registry and returns the Path to the arcObject-libraries-folder
 
     :return: The path to the ArcObject-libraries
     """
     path_to_arc_objects = ""
-    for version_number in range(7, 3, -1):
+    for version_number in range(8, 3, -1):
         try:
             esri_hkey = winreg.OpenKey(
                 winreg.HKEY_LOCAL_MACHINE,
@@ -37,7 +38,7 @@ def get_lib_path():
     return path_to_arc_objects
 
 
-def type_cast_module(arc_object, arc_interface):
+def type_cast_arc_object(arc_object, arc_interface):
     """This function casts an arc_object to an other interface and returns it
 
     :param arc_object: The arc_object to cast

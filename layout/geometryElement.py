@@ -1,7 +1,7 @@
 from dictionaries.layoutItemsDict import dict_geometry
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 from renderer.feature.symbols.simpleSymbol import SimpleSymbol
 from renderer.feature.symbols.symbolPropertiesProvider import SymbolPropertiesProvider
 
@@ -43,7 +43,7 @@ class GeometryElement(LayoutItem):
 
         GeometryElement.set_uuid_attributes(arcpy_item.name, geometry_element_layout)
 
-        symbol = type_cast_module(self.geometry_object, ArcGisModules.module_carto.IFillShapeElement).Symbol
+        symbol = type_cast_arc_object(self.geometry_object, ArcGisModules.module_carto.IFillShapeElement).Symbol
         symbol_properties = {}
 
         SymbolPropertiesProvider.get_polygon_properties(symbol_properties, symbol)

@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 from renderer.feature.symbols.subSymbolProvider import SubSymbolProvider
@@ -22,10 +22,10 @@ class FeatureMarkerFillSymbol:
             'simpleSymbolClass': "PointPatternFill",
             'dict_symbols': fill_dict,
         }
-        layer_color = unpack2rgb(i_symbol.MarkerSymbol.Color.RGB)
+        layer_color = convert_int_to_rgb_string(i_symbol.MarkerSymbol.Color.RGB)
         symbol_properties['dict_symbols']['color'] = layer_color
 
-        fill_properties = type_cast_module(i_symbol, ArcGisModules.module_display.IFillProperties)
+        fill_properties = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IFillProperties)
 
         symbol_properties['dict_symbols']['offset_x'] = str(fill_properties.XOffset)
         symbol_properties['dict_symbols']['offset_y'] = str(fill_properties.YOffset)
@@ -37,7 +37,7 @@ class FeatureMarkerFillSymbol:
         symbol_properties['dict_symbols']['distance_x_unit'] = "Pixel"
         symbol_properties['dict_symbols']['distance_y_unit'] = "Pixel"
 
-        symbol_properties['dict_symbols']['outline_color'] = str(unpack2rgb(i_symbol.Outline.Color.RGB))
+        symbol_properties['dict_symbols']['outline_color'] = str(convert_int_to_rgb_string(i_symbol.Outline.Color.RGB))
         symbol_properties['dict_symbols']['outline_width'] = str(i_symbol.Outline.Width)
 
         SubSymbolProvider.create_sub_symbol(symbol_properties, 'marker')

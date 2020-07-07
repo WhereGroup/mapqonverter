@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 
 
 class LayoutItemPropertiesProvider:
@@ -13,8 +13,8 @@ class LayoutItemPropertiesProvider:
         :param item: the item as ArcObject
         :return: the properties of an item as ArcObject
         """
-        element = type_cast_module(item, ArcGisModules.module_carto.IElement)
-        properties = type_cast_module(element, ArcGisModules.module_carto.IElementProperties3)
+        element = type_cast_arc_object(item, ArcGisModules.module_carto.IElement)
+        properties = type_cast_arc_object(element, ArcGisModules.module_carto.IElementProperties3)
 
         return properties
 
@@ -30,10 +30,10 @@ class LayoutItemPropertiesProvider:
             properties = LayoutItemPropertiesProvider.get_item_properties(layout_item)
         layout_item_type = properties.Type
         if layout_item_type == u'Map Surround Frame':
-            map_surround_frame = type_cast_module(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
-            legend = type_cast_module(map_surround_frame.MapSurround, ArcGisModules.module_carto.ILegend2)
-            north_arrow = type_cast_module(map_surround_frame.MapSurround, ArcGisModules.module_carto.INorthArrow)
-            scale_bar = type_cast_module(map_surround_frame.MapSurround, ArcGisModules.module_carto.IScaleBar)
+            map_surround_frame = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
+            legend = type_cast_arc_object(map_surround_frame.MapSurround, ArcGisModules.module_carto.ILegend2)
+            north_arrow = type_cast_arc_object(map_surround_frame.MapSurround, ArcGisModules.module_carto.INorthArrow)
+            scale_bar = type_cast_arc_object(map_surround_frame.MapSurround, ArcGisModules.module_carto.IScaleBar)
             if legend:
                 layout_item_type = u'Legend'
             if north_arrow:

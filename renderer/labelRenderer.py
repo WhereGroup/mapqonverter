@@ -1,6 +1,6 @@
 import random
 
-from modules.functions import type_cast_module, unpack2rgb
+from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
 from dictionaries.label_dict import labelDict
 from modules.arcGisModules import ArcGisModules
 
@@ -20,17 +20,17 @@ class LabelRenderer:
         symbol = None
         if renderer_type == "gdb":
             # first get annotation-parent-layer, here are the style infos for the fitting ClassId
-            annotation_parent_layer = type_cast_module(
+            annotation_parent_layer = type_cast_arc_object(
                 base.arcLayer,
                 ArcGisModules.module_carto.IAnnotationSublayer).Parent
-            annotation_class_id = type_cast_module(
+            annotation_class_id = type_cast_arc_object(
                 base.arcLayer,
                 ArcGisModules.module_carto.IAnnotationSublayer).AnnotationClassID
             # over the Class - Extension you get to the AnnotationClassExtension
-            annotation_class = type_cast_module(
+            annotation_class = type_cast_arc_object(
                 annotation_parent_layer,
                 ArcGisModules.module_gdb.IClass)
-            annotation_class_extension = type_cast_module(
+            annotation_class_extension = type_cast_arc_object(
                 annotation_class.Extension,
                 ArcGisModules.module_carto.IAnnotationClassExtension
             )
@@ -42,12 +42,12 @@ class LabelRenderer:
             labelDict['labelValues']['text-style']['fieldName'] = 'TextString'
         elif renderer_type == "feature":
             # get the AnnotationProps, that lead to the Labelrenderer and the Symbol
-            feature_layer = type_cast_module(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
-            annotation_parent_layer = type_cast_module(
+            feature_layer = type_cast_arc_object(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
+            annotation_parent_layer = type_cast_arc_object(
                 feature_layer.AnnotationProperties,
                 ArcGisModules.module_carto.IAnnotateLayerPropertiesCollection2
             )
-            label_engine = type_cast_module(
+            label_engine = type_cast_arc_object(
                 annotation_parent_layer.Properties(0),
                 ArcGisModules.module_carto.ILabelEngineLayerProperties2
             )
@@ -60,30 +60,30 @@ class LabelRenderer:
             expression = label_engine.Expression
             labelDict['labelValues']['type'] = 'simple'
             labelDict['labelValues']['text-style']['fieldName'] = expression[1:-1]
-        formatted_symbol = type_cast_module(symbol, ArcGisModules.module_display.IFormattedTextSymbol)
+        formatted_symbol = type_cast_arc_object(symbol, ArcGisModules.module_display.IFormattedTextSymbol)
         # fill the values
         labelDict['labelValues']['placement']['rotationAngle'] = str(formatted_symbol.Angle)
         labelDict['labelValues']['text-style']['fontLetterSpacing'] = str(formatted_symbol.CharacterSpacing)
         # labelDict['labelValues']['text-style']['fontWordSpacing'] = str(formattedSymbol.WordSpacing)
-        labelDict['labelValues']['text-style']['textColor'] = unpack2rgb(formatted_symbol.Color.RGB)
+        labelDict['labelValues']['text-style']['textColor'] = convert_int_to_rgb_string(formatted_symbol.Color.RGB)
         labelDict['labelValues']['text-style']['fontFamily'] = formatted_symbol.Font.Name
         labelDict['labelValues']['text-style']['fontWeight'] = str(formatted_symbol.Font.Weight)
         labelDict['labelValues']['text-style']['fontSize'] = str(formatted_symbol.Size)
         labelDict['labelValues']['text-style']['fontItalic'] = str(int(formatted_symbol.Font.Italic))
         labelDict['labelValues']['text-style']['fontUnderline'] = str(int(formatted_symbol.Font.Underline))
         try:
-            formatted_symbol_callout = type_cast_module(
+            formatted_symbol_callout = type_cast_arc_object(
                 formatted_symbol.Background,
                 ArcGisModules.module_display.ILineCallout
             )
-            formatted_symbol_callout_margin = type_cast_module(
+            formatted_symbol_callout_margin = type_cast_arc_object(
                 formatted_symbol.Background,
                 ArcGisModules.module_display.ITextMargins
             )
-            labelDict['labelValues']['background']['shapeFillColor'] = unpack2rgb(
+            labelDict['labelValues']['background']['shapeFillColor'] = convert_int_to_rgb_string(
                 formatted_symbol_callout.Border.Color.RGB
             )
-            labelDict['labelValues']['background']['shapeBorderColor'] = unpack2rgb(
+            labelDict['labelValues']['background']['shapeBorderColor'] = convert_int_to_rgb_string(
                 formatted_symbol_callout.Border.Outline.Color.RGB
             )
             labelDict['labelValues']['background']['shapeBorderWidth'] = str(
@@ -103,7 +103,7 @@ class LabelRenderer:
         else:
             labelDict['labelValues']['text-style']['namedStyle'] = "Standard"
 
-        labelDict['labelValues']['shadow']['shadowColor'] = unpack2rgb(formatted_symbol.ShadowColor.RGB)
+        labelDict['labelValues']['shadow']['shadowColor'] = convert_int_to_rgb_string(formatted_symbol.ShadowColor.RGB)
 
         return labelDict
 

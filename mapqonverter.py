@@ -11,7 +11,7 @@ from comtypes.client import CreateObject
 from map import brokenLayers
 from map.layerTree import LayerTree
 from map.visibilityPresets import VisibilityPresets
-from modules.functions import type_cast_module
+from modules.functions import type_cast_arc_object
 from modules.arcGisModules import ArcGisModules
 from map.header import create_header
 from map.mapSpatialReferenceSystem import MapSpatialReferenceSystem
@@ -40,8 +40,8 @@ def main():
 
     # take Infos from opened ArcMap-Project -> to access the arcObjects
     arc_app = CreateObject(ArcGisModules.module_framework.AppROT, interface=ArcGisModules.module_framework.IAppROT)
-    arc_doc = type_cast_module(arc_app.Item(0).Document, ArcGisModules.module_map_ui.IMxDocument)
-    arc_doc_info = type_cast_module(arc_doc, ArcGisModules.module_carto.IDocumentInfo2)
+    arc_doc = type_cast_arc_object(arc_app.Item(0).Document, ArcGisModules.module_map_ui.IMxDocument)
+    arc_doc_info = type_cast_arc_object(arc_doc, ArcGisModules.module_carto.IDocumentInfo2)
 
     if not arc_doc.ActiveView.IsMapActivated:
         arc_doc.ActiveView = arc_doc.FocusMap
@@ -82,7 +82,7 @@ def main():
     VisibilityPresets.initialize_visibility(xml_document, header, mxd)
 
     arcpy.AddMessage("Creating Layout")
-    layout = Layout(dom, header, arc_doc, mxd).create_layout()
+    layout = Layout(xml_document, header, arc_doc, mxd).create_layout()
 
     try:
         xml_document.writexml(qgs_file, indent="    ", addindent="    ", newl="\n", encoding="UTF-8")
