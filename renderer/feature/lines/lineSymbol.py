@@ -103,7 +103,7 @@ class LineSymbol:
                     width_counter += pattern_element[0] + pattern_element[1]
                 symbol_properties['dict_symbols']['customdash'] = custom_dash
                 symbol_properties['dict_symbols']['use_custom_dash'] = '1'
-                symbol_properties['dict_symbols']['interval'] = str(width_counter)
+                symbol_properties['dict_symbols']['interval'] = str(width_counter * line_properties.Template.Interval)
             symbol_properties['dict_symbols']['interval_unit'] = 'Point'
 
             symbol_properties['dict_symbols']['offset'] = str(line_properties.Offset * -1)
