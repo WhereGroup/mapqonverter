@@ -16,7 +16,7 @@ class LayerSrs:
         :param base: Is the self from the LayerObject
         :param srs_element: the srs_element in the DOM
         """
-        if ".gdb" in base.gdb_path:
+        if ".gdb" in base.gdb_path and not base.layer.isFeatureLayer:
             annotation = {}
             # An Annotation has the SRS-Infos in the parent layer, also it can't be described without RuntimeError
             # Anyways it is possible with describe to get the needed informations in the annotation dictionary
@@ -28,7 +28,7 @@ class LayerSrs:
                         break
                     else:
                         continue
-            except RuntimeError:
+            except (RuntimeError, IndexError):
                 pass
             SpatialReferenceSystem(
                 annotation['layerProj4'],
