@@ -26,7 +26,11 @@ class FeatureLayer:
                                         map_layer_element.getElementsByTagName('provider')):
             provider.setAttribute("encoding", "UTF-8")
             provider.appendChild(base.xml_document.createTextNode("ogr"))
-            datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
+            if ".gdb" in base.gdb_path:
+                datasource_path = '|layername='.join(base.layer.dataSource.rsplit('\\', 1))
+                datasource.appendChild(base.xml_document.createTextNode(datasource_path))
+            else:
+                datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
             if len(base.layer.definitionQuery) > 0:
                 datasource.firstChild.nodeValue = datasource.firstChild.nodeValue + "|layerid=0|subset=" \
                                                   + base.layer.definitionQuery

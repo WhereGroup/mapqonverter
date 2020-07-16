@@ -54,6 +54,8 @@ class LayerTree:
 
                 if layer.supports('DATASOURCE'):
                     layer_tree_element_source = layer.dataSource
+                    if ".gdb" in layer_tree_element_source:
+                        layer_tree_element_source = '|layername='.join(layer_tree_element_source.rsplit('\\', 1))
                     layer_tree_layer.setAttribute("source", layer_tree_element_source)
 
                 if layer.visible:
