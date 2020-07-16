@@ -1,5 +1,6 @@
 import re
 
+from dictionaries.raster_stretch import stretch_dict
 from modules.functions import type_cast_arc_object
 from modules.arcGisModules import ArcGisModules
 
@@ -39,7 +40,7 @@ class RasterRenderer:
         raster_renderer_element.appendChild(min_max_origin_element)
 
         origin_limits_element = base.xml_document.createElement("limits")
-        origin_limits_element_content = base.xml_document.createTextNode("CumulativeCut")
+        origin_limits_element_content = base.xml_document.createTextNode("None")
         origin_limits_element.appendChild(origin_limits_element_content)
         min_max_origin_element.appendChild(origin_limits_element)
 
@@ -54,12 +55,12 @@ class RasterRenderer:
         min_max_origin_element.appendChild(origin_stat_accuracy_element)
 
         origincumulative_cut_lower_element = base.xml_document.createElement("cumulativeCutLower")
-        origincumulative_cut_lower_element_content = base.xml_document.createTextNode("0.005")
+        origincumulative_cut_lower_element_content = base.xml_document.createTextNode("0.02")
         origincumulative_cut_lower_element.appendChild(origincumulative_cut_lower_element_content)
         min_max_origin_element.appendChild(origincumulative_cut_lower_element)
 
         origincumulative_cut_upper_element = base.xml_document.createElement("cumulativeCutUpper")
-        origincumulative_cut_upper_element_content = base.xml_document.createTextNode("0.995")
+        origincumulative_cut_upper_element_content = base.xml_document.createTextNode("0.98")
         origincumulative_cut_upper_element.appendChild(origincumulative_cut_upper_element_content)
         min_max_origin_element.appendChild(origincumulative_cut_upper_element)
 
@@ -165,63 +166,72 @@ class RasterRenderer:
         raster_renderer_element.setAttribute("greenBand", "2")
         raster_renderer_element.setAttribute("blueBand", "3")
 
-        # find the statistics for the 3 bands
-        arc_raster = arc_raster_layer.Raster
-        arc_raster = type_cast_arc_object(arc_raster, ArcGisModules.module_data_source_raster.IRaster2)
-        arc_raster_dataset = arc_raster.RasterDataset
-        arc_raster_dataset = type_cast_arc_object(arc_raster_dataset, ArcGisModules.module_gdb.IRasterDataset)
-        arc_raster_band_collection = type_cast_arc_object(
-            arc_raster_dataset,
-            ArcGisModules.module_data_source_raster.IRasterBandCollection
-        )
+        raster_stretch = type_cast_arc_object(arc_raster_layer.Renderer, ArcGisModules.module_carto.IRasterStretch2)
 
-        bandstats = {}
+        limits_element = raster_renderer_element.getElementsByTagName('limits')[0]
+        limits_element.firstChild.nodeValue = stretch_dict.get(raster_stretch.StretchType, 'None')
 
-        for x in range(1, arc_raster_band_collection.Count + 1):
-            raster_band = arc_raster_band_collection.BandByName("Band_" + str(x))
-            try:
-                band_minimum = raster_band.Statistics.Minimum
-                band_maximum = raster_band.Statistics.Maximum
-            except ValueError:
-                # arcpy.AddWarning(
-                #    "\t\tProblem occured while reading out Band-Stats from Rasterlayer." +
-                #    "Default Values are min = 0, max = 255. \n\t\t(If you don't know what this means, " +
-                #    "there is probably no problem."
-                # ) -> Log instead
-                band_minimum = 0
-                band_maximum = 255
+        stretch_params = raster_stretch.StandardDeviationsParam
+        raster_renderer_element.getElementsByTagName('stdDevFactor')[0].firstChild.nodeValue = unicode(stretch_params)
 
-            bandstats.update(
-                {x:
-                    {
-                        "min": str(int(band_minimum)),
-                        "max": str(int(band_maximum)),
+        if not raster_stretch.StretchType == 0:
+            # find the statistics for the 3 bands
+            arc_raster = arc_raster_layer.Raster
+            arc_raster = type_cast_arc_object(arc_raster, ArcGisModules.module_data_source_raster.IRaster2)
+            arc_raster_dataset = type_cast_arc_object(arc_raster.RasterDataset, ArcGisModules.module_gdb.IRasterDataset)
+            arc_raster_band_collection = type_cast_arc_object(
+                arc_raster_dataset,
+                ArcGisModules.module_data_source_raster.IRasterBandCollection
+            )
+
+            bandstats = {}
+
+            for x in range(1, arc_raster_band_collection.Count + 1):
+                raster_band = arc_raster_band_collection.BandByName("Band_" + str(x))
+                try:
+                    band_minimum = raster_band.Statistics.Minimum
+                    band_maximum = raster_band.Statistics.Maximum
+                except ValueError:
+                    # arcpy.AddWarning(
+                    #    "\t\tProblem occured while reading out Band-Stats from Rasterlayer." +
+                    #    "Default Values are min = 0, max = 255. \n\t\t(If you don't know what this means, " +
+                    #    "there is probably no problem."
+                    # ) -> Log instead
+                    band_minimum = 0
+                    band_maximum = 255
+
+                bandstats.update(
+                    {x:
+                        {
+                            "min": str(int(band_minimum)),
+                            "max": str(int(band_maximum)),
+                        }
                     }
-                 }
-            )
+                )
 
-        color = ["placeholder", "red", "green", "blue"]
-        for x in range(1, 4):
-            raster_contrast_enhancement_element = base.xml_document.createElement(color[x] + "ContrastEnhancement")
-            raster_renderer_element.appendChild(raster_contrast_enhancement_element)
+            color = ["placeholder", "red", "green", "blue"]
 
-            renderer_contrast_min_element = base.xml_document.createElement("minValue")
-            renderer_contrast_min_element_content = base.xml_document.createTextNode(
-                bandstats.get(x, {}).get("min")
-            )
-            renderer_contrast_min_element.appendChild(renderer_contrast_min_element_content)
-            raster_contrast_enhancement_element.appendChild(renderer_contrast_min_element)
+            for x in range(1, 4):
+                raster_contrast_enhancement_element = base.xml_document.createElement(color[x] + "ContrastEnhancement")
+                raster_renderer_element.appendChild(raster_contrast_enhancement_element)
 
-            renderer_contrast_max_element = base.xml_document.createElement("maxValue")
-            renderer_contrast_max_element_content = base.xml_document.createTextNode(
-                bandstats.get(x, {}).get("max")
-            )
-            renderer_contrast_max_element.appendChild(renderer_contrast_max_element_content)
-            raster_contrast_enhancement_element.appendChild(renderer_contrast_max_element)
+                renderer_contrast_min_element = base.xml_document.createElement("minValue")
+                renderer_contrast_min_element_content = base.xml_document.createTextNode(
+                    bandstats.get(x, {}).get("min")
+                )
+                renderer_contrast_min_element.appendChild(renderer_contrast_min_element_content)
+                raster_contrast_enhancement_element.appendChild(renderer_contrast_min_element)
 
-            renderer_contrast_algorithm_element = base.xml_document.createElement("algorithm")
-            renderer_contrast_algorithm_element_content = base.xml_document.createTextNode(
-                "StretchToMinimumMaximum"
-            )
-            renderer_contrast_algorithm_element.appendChild(renderer_contrast_algorithm_element_content)
-            raster_contrast_enhancement_element.appendChild(renderer_contrast_algorithm_element)
+                renderer_contrast_max_element = base.xml_document.createElement("maxValue")
+                renderer_contrast_max_element_content = base.xml_document.createTextNode(
+                    bandstats.get(x, {}).get("max")
+                )
+                renderer_contrast_max_element.appendChild(renderer_contrast_max_element_content)
+                raster_contrast_enhancement_element.appendChild(renderer_contrast_max_element)
+
+                renderer_contrast_algorithm_element = base.xml_document.createElement("algorithm")
+                renderer_contrast_algorithm_element_content = base.xml_document.createTextNode(
+                    'StretchToMinimumMaximum'
+                )
+                renderer_contrast_algorithm_element.appendChild(renderer_contrast_algorithm_element_content)
+                raster_contrast_enhancement_element.appendChild(renderer_contrast_algorithm_element)
