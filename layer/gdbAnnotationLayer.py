@@ -1,12 +1,12 @@
 from renderer.renderer import Renderer as rendererObj
 
 
-class GDBLayer:
+class GDBAnnotationLayer:
     def __init__(self):
         pass
 
     @staticmethod
-    def create_gdb_layer_content(base, map_layer_element):
+    def create_gdb_annotation_layer_content(base, map_layer_element):
         """ This Function creates gdb-layer specific content in the
             fitting maplayer-element
 

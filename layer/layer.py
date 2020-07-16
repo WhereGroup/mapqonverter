@@ -1,5 +1,5 @@
 from wmsLayer import WMSLayer
-from gdbLayer import GDBLayer
+from gdbAnnotationLayer import GDBAnnotationLayer
 from rasterLayer import RasterLayer
 from featureLayer import FeatureLayer
 from databaseLayer import DatabaseLayer
@@ -81,7 +81,7 @@ class Layer:
         'feature': FeatureLayer.create_feature_layer_content,
         'raster': RasterLayer.create_raster_layer_content,
         'wms': WMSLayer.create_wms_layer_content,
-        'gdb': GDBLayer.create_gdb_layer_content,
+        'gdb': GDBAnnotationLayer.create_gdb_annotation_layer_content,
         'database': DatabaseLayer.create_database_layer_content
     }
 
