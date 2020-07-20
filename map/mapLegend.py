@@ -42,18 +42,19 @@ class MapLegend:
         :param layer: the layer its about
         :param dataframe_group_layer: the dataframe_group_layer element in the DOM
         """
-        legendgroup[layer.name] = xml_document.createElement("legendgroup")
-        legendgroup[layer.name].setAttribute("name", layer.name)
+        legendgroup[layer.longName] = xml_document.createElement("legendgroup")
+        legendgroup[layer.longName].setAttribute("name", layer.name)
         if layer.visible:
-            legendgroup[layer.name].setAttribute("checked", "Qt::Checked")
+            legendgroup[layer.longName].setAttribute("checked", "Qt::Checked")
         else:
-            legendgroup[layer.name].setAttribute("checked", "Qt::Unchecked")
-        legendgroup[layer.name].setAttribute("open", "true")
+            legendgroup[layer.longName].setAttribute("checked", "Qt::Unchecked")
+        legendgroup[layer.longName].setAttribute("open", "true")
         # check long name for forgoing layers, append if exists, otherwise add to legend
-        try:
-            legendgroup[layer.longName.split("\\")[-2]].appendChild(legendgroup[layer.name])
-        except IndexError:
-            dataframe_group_layer.appendChild(legendgroup[layer.name])
+        forgoing_layer = layer.longName.rsplit("\\", 1)[0]
+        if forgoing_layer == layer.longName:
+            dataframe_group_layer.appendChild(legendgroup[layer.longName])
+        else:
+            legendgroup[forgoing_layer].appendChild(legendgroup[layer.longName])
 
     @staticmethod
     def create_legend_layer_element(legendgroup, xml_document, layer, dataframe_group_layer):
@@ -72,9 +73,11 @@ class MapLegend:
             legendlayer.setAttribute("checked", "Qt::Unchecked")
         legendlayer.setAttribute("name", layer.name)
         # same as for grouplayer-elements
-        try:
-            legendgroup[layer.longName.split("\\")[-2]].appendChild(legendlayer)
-        except IndexError:
+
+        if '\\' in layer.longName:
+            forgoing_layer = layer.longName.rsplit("\\", 1)[0]
+            legendgroup[forgoing_layer].appendChild(legendlayer)
+        else:
             dataframe_group_layer.appendChild(legendlayer)
 
         filegroup_element = xml_document.createElement("filegroup")
