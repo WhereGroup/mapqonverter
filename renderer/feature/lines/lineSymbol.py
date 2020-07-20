@@ -102,7 +102,10 @@ class LineSymbol:
                     custom_dash += '{};{}'.format(pattern_element[0], pattern_element[1])
                     width_counter += pattern_element[0] + pattern_element[1]
                 symbol_properties['dict_symbols']['customdash'] = custom_dash
-                symbol_properties['dict_symbols']['use_custom_dash'] = '1'
+                if not custom_dash == '':
+                    symbol_properties['dict_symbols']['use_custom_dash'] = '1'
+                else:
+                    symbol_properties['dict_symbols']['use_custom_dash'] = '0'
                 symbol_properties['dict_symbols']['interval'] = str(width_counter * line_properties.Template.Interval)
             symbol_properties['dict_symbols']['interval_unit'] = 'Point'
 
