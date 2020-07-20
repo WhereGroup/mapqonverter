@@ -1,7 +1,7 @@
 from layoutUuidProvider import LayoutUuidProvider
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 
 
 class LegendElement(LayoutItem):
@@ -53,7 +53,7 @@ class LegendElement(LayoutItem):
         arcpy_item = LayoutItem.get_arcpy_layout_element(self, self.layout_item_object)
         LegendElement.set_size_and_position(self, layout_item_base_element, arcpy_item)
 
-        legend_frame = type_cast_arc_object(self.legend_object.MapSurround, ArcGisModules.module_carto.ILegend2)
+        legend_frame = change_interface(self.legend_object.MapSurround, ArcGisModules.module_carto.ILegend2)
         legend_format = legend_frame.Format
 
         if legend_format.ShowTitle:

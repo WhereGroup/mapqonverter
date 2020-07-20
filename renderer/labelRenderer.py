@@ -1,7 +1,7 @@
 import copy
 import random
 
-from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
+from modules.functions import change_interface, convert_int_to_rgb_string
 from dictionaries.label_dict import labelDict
 from modules.arcGisModules import ArcGisModules
 
@@ -30,7 +30,7 @@ class LabelRenderer:
         elif renderer_type == "feature":
             symbol = LabelRenderer.specify_feature_content(base.arcLayer, label_dict)
 
-        formatted_symbol = type_cast_arc_object(symbol, ArcGisModules.module_display.IFormattedTextSymbol)
+        formatted_symbol = change_interface(symbol, ArcGisModules.module_display.IFormattedTextSymbol)
 
         LabelRenderer.get_text_style(formatted_symbol, label_dict)
         LabelRenderer.get_background(formatted_symbol, label_dict)
@@ -143,11 +143,11 @@ class LabelRenderer:
         :param label_dict: the label dictionary including all the label properties
         """
         try:
-            formatted_symbol_callout = type_cast_arc_object(
+            formatted_symbol_callout = change_interface(
                 formatted_symbol.Background,
                 ArcGisModules.module_display.ILineCallout
             )
-            formatted_symbol_callout_margin = type_cast_arc_object(
+            formatted_symbol_callout_margin = change_interface(
                 formatted_symbol.Background,
                 ArcGisModules.module_display.ITextMargins
             )
@@ -201,15 +201,15 @@ class LabelRenderer:
         :return: the text-symbol as iSymbol
         """
         # first get annotation-parent-layer, here are the style infos for the fitting ClassId
-        annotation_parent_layer = type_cast_arc_object(
+        annotation_parent_layer = change_interface(
             arc_layer,
             ArcGisModules.module_carto.IAnnotationSublayer).Parent
         annotation_class_id = LabelRenderer.get_annotation_class_id(arc_layer)
         # over the Class - Extension you get to the AnnotationClassExtension
-        annotation_class = type_cast_arc_object(
+        annotation_class = change_interface(
             annotation_parent_layer,
             ArcGisModules.module_gdb.IClass)
-        annotation_class_extension = type_cast_arc_object(
+        annotation_class_extension = change_interface(
             annotation_class.Extension,
             ArcGisModules.module_carto.IAnnotationClassExtension
         )
@@ -224,7 +224,7 @@ class LabelRenderer:
         :param arc_layer: the layer as arc_object
         :return: annotation_class_id
         """
-        annotation_class_id = type_cast_arc_object(
+        annotation_class_id = change_interface(
             arc_layer,
             ArcGisModules.module_carto.IAnnotationSublayer).AnnotationClassID
 
@@ -239,12 +239,12 @@ class LabelRenderer:
         :return: the text-symbol as iSymbol
         """
         # get the AnnotationProps, that lead to the Labelrenderer and the Symbol
-        feature_layer = type_cast_arc_object(arc_layer, ArcGisModules.module_carto.IGeoFeatureLayer)
-        annotation_parent_layer = type_cast_arc_object(
+        feature_layer = change_interface(arc_layer, ArcGisModules.module_carto.IGeoFeatureLayer)
+        annotation_parent_layer = change_interface(
             feature_layer.AnnotationProperties,
             ArcGisModules.module_carto.IAnnotateLayerPropertiesCollection2
         )
-        label_engine = type_cast_arc_object(
+        label_engine = change_interface(
             annotation_parent_layer.Properties(0),
             ArcGisModules.module_carto.ILabelEngineLayerProperties2
         )

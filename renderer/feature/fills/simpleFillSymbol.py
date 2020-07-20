@@ -2,7 +2,7 @@ import arcpy
 
 from dictionaries.singleSymbol import SingleSymbol
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
+from modules.functions import change_interface, convert_int_to_rgb_string
 import copy
 
 
@@ -21,7 +21,7 @@ class FeatureSimpleFillSymbol:
         fill_dict = copy.deepcopy(SingleSymbol.propDict)
         symbol_properties = {'simpleSymbolClass': "SimpleFill", 'dict_symbols': fill_dict}
 
-        fill_symbol = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IFillSymbol)
+        fill_symbol = change_interface(i_symbol, ArcGisModules.module_display.IFillSymbol)
 
         try:
             layer_color = convert_int_to_rgb_string(fill_symbol.Color.RGB)
@@ -39,7 +39,7 @@ class FeatureSimpleFillSymbol:
         symbol_properties['dict_symbols']['color'] = layer_color
 
         if fill_symbol.Outline:
-            simple_outline = type_cast_arc_object(fill_symbol.Outline, ArcGisModules.module_display.ISimpleLineSymbol)
+            simple_outline = change_interface(fill_symbol.Outline, ArcGisModules.module_display.ISimpleLineSymbol)
             if simple_outline:
                 symbol_properties['dict_symbols']['outline_style'] = \
                     SingleSymbol.simple_line_style_dict[simple_outline.Style]

@@ -2,7 +2,7 @@ from renderer.feature.symbols.simpleSymbol import SimpleSymbol
 from renderer.feature.symbols.symbolPropertiesProvider import SymbolPropertiesProvider
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 
 
 class LineElement(LayoutItem):
@@ -30,9 +30,9 @@ class LineElement(LayoutItem):
         arcpy_item = LayoutItem.get_arcpy_layout_element(self, self.line_object)
         LineElement.set_size_and_position(self, line_element_layout, arcpy_item)
 
-        element_geometry = type_cast_arc_object(self.line_object, ArcGisModules.module_carto.IElement).Geometry
-        poly_ine_symbol = type_cast_arc_object(element_geometry, ArcGisModules.module_geometry.IPolyline5)
-        point_collection = type_cast_arc_object(poly_ine_symbol, ArcGisModules.module_geometry.IPointCollection)
+        element_geometry = change_interface(self.line_object, ArcGisModules.module_carto.IElement).Geometry
+        poly_ine_symbol = change_interface(element_geometry, ArcGisModules.module_geometry.IPolyline5)
+        point_collection = change_interface(poly_ine_symbol, ArcGisModules.module_geometry.IPointCollection)
 
         line_element_layout.setAttribute('type', '65645')
         line_element_layout.setAttribute("frame", "false")

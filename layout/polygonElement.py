@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 from renderer.feature.symbols.simpleSymbol import SimpleSymbol
 from renderer.feature.symbols.symbolPropertiesProvider import SymbolPropertiesProvider
 from layoutItem import LayoutItem
@@ -36,15 +36,15 @@ class PolygonElement(LayoutItem):
 
         PolygonElement.set_uuid_attributes(arcpy_item.name, polygon_element_layout)
 
-        symbol = type_cast_arc_object(self.polygon_object, ArcGisModules.module_carto.IFillShapeElement).Symbol
+        symbol = change_interface(self.polygon_object, ArcGisModules.module_carto.IFillShapeElement).Symbol
         symbol_properties = {}
 
         SymbolPropertiesProvider.get_polygon_properties(symbol_properties, symbol)
 
         SimpleSymbol.create_simple_symbol(self.dom, polygon_element_layout, symbol_properties, 1, '1')
 
-        element_geometry = type_cast_arc_object(self.polygon_object, ArcGisModules.module_carto.IElement).Geometry
-        polygon_symbol = type_cast_arc_object(element_geometry, ArcGisModules.module_geometry.IPolygon5)
-        point_collection = type_cast_arc_object(polygon_symbol, ArcGisModules.module_geometry.IPointCollection)
+        element_geometry = change_interface(self.polygon_object, ArcGisModules.module_carto.IElement).Geometry
+        polygon_symbol = change_interface(element_geometry, ArcGisModules.module_geometry.IPolygon5)
+        point_collection = change_interface(polygon_symbol, ArcGisModules.module_geometry.IPointCollection)
 
         PolygonElement.create_nodes(self, polygon_element_layout, point_collection, arcpy_item)

@@ -5,7 +5,7 @@ from layer.layer import Layer as layerObj
 import arcpy
 import logging
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 from map import brokenLayers
 
 
@@ -164,7 +164,7 @@ class ProjectLayers:
 
         # and the rest
         for index, longname_layer in enumerate(longname_layer_list[1:]):
-            parent = type_cast_arc_object(longname_layer_list_objects[index], ArcGisModules.module_carto.ICompositeLayer)
+            parent = change_interface(longname_layer_list_objects[index], ArcGisModules.module_carto.ICompositeLayer)
             for i in range(parent.Count):
                 if longname_layer == parent.Layer[i].Name:
                     longname_layer_list_objects.append(parent.Layer[i])

@@ -1,5 +1,5 @@
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 from renderer.feature.fills.gradientFillSymbol import FeatureGradientFillSymbol
 from renderer.feature.fills.lineFillSymbol import FeatureLineFillSymbol
 from renderer.feature.fills.markerFillSymbol import FeatureMarkerFillSymbol
@@ -20,17 +20,17 @@ class SymbolPropertiesProvider:
         """
         symbol_properties['symbol_type'] = "fill"
         symbol_properties['layer'] = []
-        multilayer_symbol = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IMultiLayerFillSymbol)
+        multilayer_symbol = change_interface(i_symbol, ArcGisModules.module_display.IMultiLayerFillSymbol)
 
         if multilayer_symbol:
             symbol_collection = SymbolPropertiesProvider.get_multilayer_symbol_collection(multilayer_symbol)
 
             for symbol in symbol_collection:
-                line_fill_symbol = type_cast_arc_object(symbol, ArcGisModules.module_display.ILineFillSymbol)
-                marker_fill_symbol = type_cast_arc_object(symbol, ArcGisModules.module_display.IMarkerFillSymbol)
-                gradient_fill_symbol = type_cast_arc_object(symbol, ArcGisModules.module_display.IGradientFillSymbol)
+                line_fill_symbol = change_interface(symbol, ArcGisModules.module_display.ILineFillSymbol)
+                marker_fill_symbol = change_interface(symbol, ArcGisModules.module_display.IMarkerFillSymbol)
+                gradient_fill_symbol = change_interface(symbol, ArcGisModules.module_display.IGradientFillSymbol)
 
-                outline = type_cast_arc_object(symbol.Outline, ArcGisModules.module_display.ILineSymbol)
+                outline = change_interface(symbol.Outline, ArcGisModules.module_display.ILineSymbol)
 
                 if outline:
                     SymbolPropertiesProvider.get_multilayer_line_symbol(outline, symbol_properties)
@@ -71,7 +71,7 @@ class SymbolPropertiesProvider:
         :param symbol_properties: This is a dictionary for the properties of a symbol
         :param i_symbol: this is the used polygon symbol
         """
-        multilayer_symbol = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IMultiLayerLineSymbol)
+        multilayer_symbol = change_interface(i_symbol, ArcGisModules.module_display.IMultiLayerLineSymbol)
 
         from renderer.feature.lines.lineSymbol import LineSymbol
         if multilayer_symbol:
@@ -92,7 +92,7 @@ class SymbolPropertiesProvider:
         """
         symbol_properties['symbol_type'] = "marker"
         symbol_properties['layer'] = []
-        multilayer_symbol = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IMultiLayerMarkerSymbol)
+        multilayer_symbol = change_interface(i_symbol, ArcGisModules.module_display.IMultiLayerMarkerSymbol)
 
         if multilayer_symbol:
             symbol_collection = SymbolPropertiesProvider.get_multilayer_symbol_collection(multilayer_symbol)

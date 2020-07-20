@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
+from modules.functions import change_interface, convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 
@@ -21,15 +21,15 @@ class SimpleMarkerSymbol:
         marker_dict = copy.deepcopy(SingleSymbol.propDict)
         symbol_properties = {'simpleSymbolClass': "SimpleMarker", 'dict_symbols': marker_dict}
 
-        symbol_marker = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IMarkerSymbol)
+        symbol_marker = change_interface(i_symbol, ArcGisModules.module_display.IMarkerSymbol)
 
         try:
-            multilayer_symbol = type_cast_arc_object(
+            multilayer_symbol = change_interface(
                 i_symbol,
                 ArcGisModules.module_display.IMultiLayerMarkerSymbol).Layer[0]
-            symbol_simple_marker = type_cast_arc_object(multilayer_symbol, ArcGisModules.module_display.ISimpleMarkerSymbol)
+            symbol_simple_marker = change_interface(multilayer_symbol, ArcGisModules.module_display.ISimpleMarkerSymbol)
         except AttributeError:
-            symbol_simple_marker = type_cast_arc_object(i_symbol, ArcGisModules.module_display.ISimpleMarkerSymbol)
+            symbol_simple_marker = change_interface(i_symbol, ArcGisModules.module_display.ISimpleMarkerSymbol)
 
         if symbol_simple_marker:
             symbol_properties['dict_symbols']['style'] = symbol_simple_marker.Style

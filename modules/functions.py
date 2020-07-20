@@ -1,4 +1,5 @@
-import winreg
+import _ctypes
+import arcpy
 
 
 def convert_int_to_rgb_string(rgb_int):
@@ -23,31 +24,22 @@ def get_arc_object_library_path():
 
     :return: The path to the ArcObject-libraries
     """
-    path_to_arc_objects = ""
-    for version_number in range(8, 3, -1):
-        try:
-            esri_hkey = winreg.OpenKey(
-                winreg.HKEY_LOCAL_MACHINE,
-                "SOFTWARE\\ESRI\\Desktop10.{version_number}".format(version_number=version_number)
-            )
-            path_to_arc_objects = winreg.QueryValueEx(esri_hkey, "InstallDir")[0] + "com\\"
-            break
-        except WindowsError:
-            pass
+    install_directory = arcpy.GetInstallInfo()['InstallDir']
+    lib_directory = '{install_dir}com\\'.format(install_dir=install_directory)
 
-    return path_to_arc_objects
+    return lib_directory
 
 
-def type_cast_arc_object(arc_object, arc_interface):
-    """This function casts an arc_object to an other interface and returns it
+def change_interface(arc_object, new_interface):
+    """This function changes an interface from an arcObject and returns it
 
-    :param arc_object: The arc_object to cast
-    :param arc_interface: the interface to cast to
-    :return: the new object or none
+    :param arc_object: The arc_object
+    :param new_interface: the interface to use
+    :return: the new interface or none
     """
     try:
-        new_object = arc_object.QueryInterface(arc_interface)
-    except (ValueError, Exception):
-        new_object = None
+        object_with_new_interface = arc_object.QueryInterface(new_interface)
+    except (_ctypes.COMError, Exception):
+        object_with_new_interface = None
 
-    return new_object
+    return object_with_new_interface

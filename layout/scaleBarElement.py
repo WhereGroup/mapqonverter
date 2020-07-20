@@ -2,7 +2,7 @@ from dictionaries.layoutItemsDict import dict_units, dict_vertical_position, dic
 from layoutUuidProvider import LayoutUuidProvider
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
+from modules.functions import change_interface, convert_int_to_rgb_string
 
 
 class ScaleBarElement(LayoutItem):
@@ -37,8 +37,8 @@ class ScaleBarElement(LayoutItem):
         arcpy_item = LayoutItem.get_arcpy_layout_element(self, self.layout_item_object)
         ScaleBarElement.set_size_and_position(self, layout_item_base_element, arcpy_item)
 
-        scale_bar = type_cast_arc_object(self.scale_bar_object.MapSurround, ArcGisModules.module_carto.IScaleBar)
-        scale_marks = type_cast_arc_object(self.scale_bar_object.MapSurround, ArcGisModules.module_carto.IScaleMarks)
+        scale_bar = change_interface(self.scale_bar_object.MapSurround, ArcGisModules.module_carto.IScaleBar)
+        scale_marks = change_interface(self.scale_bar_object.MapSurround, ArcGisModules.module_carto.IScaleMarks)
 
         layout_item_base_element.setAttribute('unitType', dict_units[scale_bar.Units])
         layout_item_base_element.setAttribute('unitLabel', scale_bar.UnitLabel)
@@ -70,7 +70,7 @@ class ScaleBarElement(LayoutItem):
         else:
             layout_item_base_element.setAttribute('style', "Single Box")
 
-        scale_line = type_cast_arc_object(scale_bar, ArcGisModules.module_carto.IScaleLine)
+        scale_line = change_interface(scale_bar, ArcGisModules.module_carto.IScaleLine)
         if scale_line:
             layout_item_base_element.setAttribute('numSegments',
                                                   unicode(
@@ -83,7 +83,7 @@ class ScaleBarElement(LayoutItem):
                                                   )
             layout_item_base_element.setAttribute('style', dict_line_style[scale_marks.MarkPosition])
 
-        double_fill_scale_bar = type_cast_arc_object(scale_bar, ArcGisModules.module_carto.IDoubleFillScaleBar)
+        double_fill_scale_bar = change_interface(scale_bar, ArcGisModules.module_carto.IDoubleFillScaleBar)
 
         if double_fill_scale_bar:
             fill_color_1 = convert_int_to_rgb_string(double_fill_scale_bar.FillSymbol1.Color.RGB).split(",")

@@ -12,7 +12,7 @@ from layoutItemFrame import LayoutItemFrame
 from layoutItemPropertiesProvider import LayoutItemPropertiesProvider
 from layoutItemText import LayoutItemText
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 from dictionaries.layoutItemsDict import dict_units
 
 
@@ -92,56 +92,56 @@ class Layout:
         :param layout_element_dom: the main layout_element in the dom
         """
         if layout_item_type == 'Text':
-            layout_text_item = type_cast_arc_object(layout_item, ArcGisModules.module_carto.ITextElement)
+            layout_text_item = change_interface(layout_item, ArcGisModules.module_carto.ITextElement)
             text_item = LayoutItemText(self.dom, layout_element_dom, layout_text_item, self.mxd, self.arc_doc)
             text_basic_layout = text_item.create_layout_item_basic()
             text_item.create_text_content(text_basic_layout)
 
         elif layout_item_type == 'Data Frame':
-            layout_map_item = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IMapFrame)
+            layout_map_item = change_interface(layout_item, ArcGisModules.module_carto.IMapFrame)
             if layout_map_item:
                 map_item = LayoutItemFrame(self.dom, layout_element_dom, layout_map_item, self.mxd, self.arc_doc)
                 map_basic_layout = map_item.create_layout_item_basic()
                 map_item.create_map_content(map_basic_layout)
 
         elif layout_item_type == 'Legend':
-            map_surround_frame = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
+            map_surround_frame = change_interface(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
             legend_item = LegendElement(self.dom, layout_element_dom, map_surround_frame, self.mxd, self.arc_doc)
             legend_basic_layout = legend_item.create_layout_item_basic()
             legend_item.create_legend_content(legend_basic_layout)
 
         elif layout_item_type == 'North Arrow':
-            map_surround_frame = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
+            map_surround_frame = change_interface(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
             north_arrow_item = NorthArrowElement(self.dom, layout_element_dom, map_surround_frame, self.mxd, self.arc_doc)
             north_arrow_basic_layout = north_arrow_item.create_layout_item_basic()
             north_arrow_item.create_north_arrow_content(north_arrow_basic_layout)
 
         elif layout_item_type == 'Scale Bar':
-            map_surround_frame = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
+            map_surround_frame = change_interface(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
             scale_bar_item = ScaleBarElement(self.dom, layout_element_dom, map_surround_frame, self.mxd, self.arc_doc)
             scale_bar_basic_layout = scale_bar_item.create_layout_item_basic()
             scale_bar_item.create_scale_bar_content(scale_bar_basic_layout)
 
         elif layout_item_type in ['Rectangle', 'Ellipse', 'Circle']:
-            fill_symbol_element = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IFillShapeElement)
+            fill_symbol_element = change_interface(layout_item, ArcGisModules.module_carto.IFillShapeElement)
             geometry_element = GeometryElement(self.dom, layout_element_dom, fill_symbol_element, self.mxd, self.arc_doc)
             geometry_element_layout = geometry_element.create_layout_item_basic()
             geometry_element.create_geometry_element_content(geometry_element_layout, layout_item_type)
 
         elif layout_item_type == 'Line':
-            line_symbol = type_cast_arc_object(layout_item, ArcGisModules.module_carto.ILineElement)
+            line_symbol = change_interface(layout_item, ArcGisModules.module_carto.ILineElement)
             line_element = LineElement(self.dom, layout_element_dom, line_symbol, self.mxd, self.arc_doc)
             line_element_layout = line_element.create_layout_item_basic()
             line_element.create_line_element_content(line_element_layout)
 
         elif layout_item_type == 'Polygon':
-            fill_symbol_element = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IFillShapeElement)
+            fill_symbol_element = change_interface(layout_item, ArcGisModules.module_carto.IFillShapeElement)
             polygon_element = PolygonElement(self.dom, layout_element_dom, fill_symbol_element, self.mxd, self.arc_doc)
             polygon_element_layout = polygon_element.create_layout_item_basic()
             polygon_element.create_geometry_element_content(polygon_element_layout)
 
         elif layout_item_type == 'Picture':
-            picture_element_arc = type_cast_arc_object(layout_item, ArcGisModules.module_carto.IPictureElement3)
+            picture_element_arc = change_interface(layout_item, ArcGisModules.module_carto.IPictureElement3)
             picture_element = PictureElement(self.dom, layout_element_dom, picture_element_arc, self.mxd, self.arc_doc)
             picture_element_layout = picture_element.create_layout_item_basic()
             picture_element.create_picture_content(picture_element_layout)
@@ -156,8 +156,8 @@ class Layout:
         if self.arc_doc.ActiveView.IsMapActivated:
             self.arc_doc.ActiveView = self.arc_doc.PageLayout
 
-        graphics_container_select = type_cast_arc_object(self.arc_doc.PageLayout,
-                                                         ArcGisModules.module_carto.IGraphicsContainerSelect)
+        graphics_container_select = change_interface(self.arc_doc.PageLayout,
+                                                     ArcGisModules.module_carto.IGraphicsContainerSelect)
         graphics_container_select.SelectAllElements()
         all_layout_elements = graphics_container_select.SelectedElements
         count = graphics_container_select.ElementSelectionCount

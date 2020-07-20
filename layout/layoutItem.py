@@ -5,7 +5,7 @@ from layoutUuidProvider import LayoutUuidProvider
 from zValueProvider import ZValueProvider
 from layoutItemPropertiesProvider import LayoutItemPropertiesProvider
 from modules.arcGisModules import ArcGisModules
-from modules.functions import convert_int_to_rgb_string, type_cast_arc_object
+from modules.functions import convert_int_to_rgb_string, change_interface
 
 
 class LayoutItem:
@@ -135,7 +135,7 @@ class LayoutItem:
         :return: Boolean if the arcpy item is the same as the compared ArcObject
         """
         result = False
-        i_element = type_cast_arc_object(arc_object_item, ArcGisModules.module_carto.IElement)
+        i_element = change_interface(arc_object_item, ArcGisModules.module_carto.IElement)
 
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
@@ -210,8 +210,8 @@ class LayoutItem:
         :param background: the background_object as arcObject
         :param layout_item_base_element: the item layout in the DOM
         """
-        frame_border_symbol = type_cast_arc_object(border, ArcGisModules.module_carto.ISymbolBorder)
-        frame_background_symbol = type_cast_arc_object(
+        frame_border_symbol = change_interface(border, ArcGisModules.module_carto.ISymbolBorder)
+        frame_background_symbol = change_interface(
             background,
             ArcGisModules.module_carto.ISymbolBackground
         )

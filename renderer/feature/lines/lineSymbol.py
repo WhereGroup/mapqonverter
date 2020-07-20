@@ -1,7 +1,7 @@
 import arcpy
 
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object, convert_int_to_rgb_string
+from modules.functions import change_interface, convert_int_to_rgb_string
 import copy
 from dictionaries.singleSymbol import SingleSymbol
 from renderer.feature.lines.hashLine import HashLine
@@ -30,10 +30,10 @@ class LineSymbol:
         :return: the line type and fitting ArcObject-Symbol as dictionary
         """
         line_symbol_type = {}
-        symbol_hash_line = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IHashLineSymbol)
-        symbol_marker_line = type_cast_arc_object(i_symbol, ArcGisModules.module_display.IMarkerLineSymbol)
-        symbol_cartographic_line = type_cast_arc_object(i_symbol, ArcGisModules.module_display.ICartographicLineSymbol)
-        symbol_simple_line = type_cast_arc_object(i_symbol, ArcGisModules.module_display.ISimpleLineSymbol)
+        symbol_hash_line = change_interface(i_symbol, ArcGisModules.module_display.IHashLineSymbol)
+        symbol_marker_line = change_interface(i_symbol, ArcGisModules.module_display.IMarkerLineSymbol)
+        symbol_cartographic_line = change_interface(i_symbol, ArcGisModules.module_display.ICartographicLineSymbol)
+        symbol_simple_line = change_interface(i_symbol, ArcGisModules.module_display.ISimpleLineSymbol)
 
         if symbol_hash_line:
             line_symbol_type["hash"] = symbol_hash_line
@@ -68,7 +68,7 @@ class LineSymbol:
 
         LineSymbol.create_line_properties(i_symbol, symbol_properties)
 
-        basic_line_symbol = type_cast_arc_object(i_symbol, ArcGisModules.module_display.ILineSymbol)
+        basic_line_symbol = change_interface(i_symbol, ArcGisModules.module_display.ILineSymbol)
         try:
             layer_color = convert_int_to_rgb_string(basic_line_symbol.Color.RGB)
         except ValueError:
@@ -89,7 +89,7 @@ class LineSymbol:
         :param line_symbol: the line_symbol to investigate
         :param symbol_properties: the properties of the line as dictionary
         """
-        line_properties = type_cast_arc_object(line_symbol, ArcGisModules.module_display.ILineProperties)
+        line_properties = change_interface(line_symbol, ArcGisModules.module_display.ILineProperties)
         if line_properties:
             if line_properties.Template:
                 pattern_count = line_properties.Template.PatternElementCount

@@ -1,6 +1,6 @@
 import arcpy
 
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 from modules.arcGisModules import ArcGisModules
 from renderer.renderer import Renderer as rendererObj
 
@@ -18,7 +18,7 @@ class WMSLayer:
         :param map_layer_element: the maplayer_element in the DOM
         """
         map_layer_element.setAttribute("type", "raster")
-        wms_layer = type_cast_arc_object(base.arc_layer, ArcGisModules.module_carto.IWMSGroupLayer)
+        wms_layer = change_interface(base.arc_layer, ArcGisModules.module_carto.IWMSGroupLayer)
         try:
             wms_layer_version = wms_layer.WMSServiceDescription.WMSVersion
         except ValueError:

@@ -1,6 +1,6 @@
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
-from modules.functions import type_cast_arc_object
+from modules.functions import change_interface
 
 
 class PictureElement(LayoutItem):
@@ -29,7 +29,7 @@ class PictureElement(LayoutItem):
         arcpy_item = LayoutItem.get_arcpy_layout_element(self, self.picture_object)
         PictureElement.set_size_and_position(self, picture_element_base_layout, arcpy_item)
 
-        frame_properties = type_cast_arc_object(self.picture_object, ArcGisModules.module_carto.IFrameProperties)
+        frame_properties = change_interface(self.picture_object, ArcGisModules.module_carto.IFrameProperties)
 
         border = frame_properties.Border
         background = frame_properties.Background
