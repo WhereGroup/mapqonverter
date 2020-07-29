@@ -3,6 +3,8 @@ from layoutUuidProvider import LayoutUuidProvider
 from layoutItem import LayoutItem
 from modules.arcGisModules import ArcGisModules
 from modules.functions import change_interface, convert_int_to_rgb_string
+from renderer.feature.symbols.simpleSymbol import SimpleSymbol
+from renderer.feature.symbols.symbolPropertiesProvider import SymbolPropertiesProvider
 
 
 class ScaleBarElement(LayoutItem):
@@ -88,6 +90,20 @@ class ScaleBarElement(LayoutItem):
         if double_fill_scale_bar:
             fill_color_1 = convert_int_to_rgb_string(double_fill_scale_bar.FillSymbol1.Color.RGB).split(",")
             fill_color_2 = convert_int_to_rgb_string(double_fill_scale_bar.FillSymbol2.Color.RGB).split(",")
+            if double_fill_scale_bar.FillSymbol1.Color.NullColor and double_fill_scale_bar.FillSymbol2.Color.NullColor:
+                layout_item_base_element.setAttribute('style', 'hollow')
+
+            symbol_properties_1 = {}
+            fill_symbol_1_element = self.dom.createElement('fillSymbol1')
+            SymbolPropertiesProvider.get_polygon_properties(symbol_properties_1, double_fill_scale_bar.FillSymbol1)
+            SimpleSymbol.create_simple_symbol(self.dom, fill_symbol_1_element, symbol_properties_1, '', '1')
+            layout_item_base_element.appendChild(fill_symbol_1_element)
+
+            symbol_properties_2 = {}
+            fill_symbol_2_element = self.dom.createElement('fillSymbol2')
+            SymbolPropertiesProvider.get_polygon_properties(symbol_properties_2, double_fill_scale_bar.FillSymbol2)
+            SimpleSymbol.create_simple_symbol(self.dom, fill_symbol_2_element, symbol_properties_2, '', '1')
+            layout_item_base_element.appendChild(fill_symbol_2_element)
         else:
             fill_color_1 = convert_int_to_rgb_string(scale_bar.BarColor.RGB).split(',')
             fill_color_2 = "255,255,255,255"
