@@ -1,6 +1,7 @@
 import arcpy
 
 from dictionaries.layoutItemsDict import dict_arcpy_arcObj_types, dict_units
+from unit_provider import UnitProvider
 from layoutUuidProvider import LayoutUuidProvider
 from zValueProvider import ZValueProvider
 from layoutItemPropertiesProvider import LayoutItemPropertiesProvider
@@ -137,6 +138,8 @@ class LayoutItem:
         result = False
         i_element = change_interface(arc_object_item, ArcGisModules.module_carto.IElement)
 
+        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
+
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
                 and arcpy_object.text == arc_object_item.Text:
@@ -154,8 +157,10 @@ class LayoutItem:
             result = True
         elif filter_type == 'GRAPHIC_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and round(arcpy_object.elementPositionY, 3) == round(i_element.Geometry.Envelope.YMin, 3) \
-                and round(arcpy_object.elementPositionX, 3) == round(i_element.Geometry.Envelope.XMin, 3):
+                and round(arcpy_object.elementPositionY * convert_unit_factor, 2) == round(
+                    i_element.Geometry.Envelope.YMin, 2) \
+                and round(arcpy_object.elementPositionX * convert_unit_factor, 2) == round(
+                    i_element.Geometry.Envelope.XMin, 2):
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
@@ -188,20 +193,22 @@ class LayoutItem:
         :param layout_item_base_element: the layout-item in the DOM
         :param arcpy_item: the arcpy item to the layout-item
         """
-        units = dict_units[self.arc_doc.PageLayout.Page.Units]
+        target_unit = dict_units[self.arc_doc.PageLayout.Page.Units]
+
+        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
 
         page_heigth = self.arc_doc.PageLayout.Page.PrintableBounds.Height
 
         layout_item_base_element.setAttribute("size", "{width},{height},{units}".format(
-            height=arcpy_item.elementHeight,
-            width=arcpy_item.elementWidth,
-            units=units),
-        )
+            height=arcpy_item.elementHeight * convert_unit_factor,
+            width=arcpy_item.elementWidth * convert_unit_factor,
+            units=target_unit),
+                                              )
         layout_item_base_element.setAttribute("position", "{pos_x},{pos_y},{units}".format(
-            pos_x=arcpy_item.elementPositionX,
-            pos_y=page_heigth-arcpy_item.elementPositionY,
-            units=units),
-        )
+            pos_x=arcpy_item.elementPositionX * convert_unit_factor,
+            pos_y=page_heigth - arcpy_item.elementPositionY * convert_unit_factor,
+            units=target_unit),
+                                              )
 
     def create_background_and_frame(self, border, background, layout_item_base_element):
         """
@@ -229,7 +236,7 @@ class LayoutItem:
             )
         else:
             layout_item_base_element.setAttribute("frame", "false")
-            
+
         if frame_background_symbol:
             layout_item_base_element.setAttribute("background", "true")
             LayoutItem.create_background_element(
@@ -251,11 +258,16 @@ class LayoutItem:
         line_element_layout.appendChild(nodes_element)
         page_heigth = self.arc_doc.PageLayout.Page.PrintableBounds.Height
 
+        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
+
         for index in range(0, point_collection.PointCount):
             point = point_collection.Point[index]
-            y_coordinate = page_heigth - point.Y - (page_heigth - arcpy_item.elementPositionY - arcpy_item.elementHeight)
+            y_coordinate = page_heigth - point.Y - (
+                        page_heigth - arcpy_item.elementPositionY * convert_unit_factor
+                        - arcpy_item.elementHeight * convert_unit_factor
+            )
             node_element = self.dom.createElement('node')
-            node_element.setAttribute('x', unicode(point.X - arcpy_item.elementPositionX))
+            node_element.setAttribute('x', unicode(point.X - arcpy_item.elementPositionX * convert_unit_factor))
             node_element.setAttribute('y', unicode(y_coordinate))
             nodes_element.appendChild(node_element)
 

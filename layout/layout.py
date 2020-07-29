@@ -1,5 +1,6 @@
 from BackgroundPageElement import BackGroundPageElement
 from geometryElement import GeometryElement
+from unit_provider import UnitProvider
 from polygonElement import PolygonElement
 from lineElement import LineElement
 from pictureElement import PictureElement
@@ -34,6 +35,9 @@ class Layout:
         """ This is the Main-Function to create the Layout
         It collects all layout-items and creates the content for each one.
         """
+        units = self.arc_doc.PageLayout.Page.Units
+        UnitProvider.set_origin_unit(units)
+        self.arc_doc.PageLayout.Page.Units = 7
 
         layout_element_dom = Layout.create_base_layout_element(self)
         layout_item_list = Layout.get_layout_items(self)
