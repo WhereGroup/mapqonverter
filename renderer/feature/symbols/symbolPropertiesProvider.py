@@ -3,6 +3,7 @@ from modules.functions import change_interface
 from renderer.feature.fills.gradientFillSymbol import FeatureGradientFillSymbol
 from renderer.feature.fills.lineFillSymbol import FeatureLineFillSymbol
 from renderer.feature.fills.markerFillSymbol import FeatureMarkerFillSymbol
+from renderer.feature.fills.randomMarkerFill import RandomMarkerFillSymbol
 from renderer.feature.fills.simpleFillSymbol import FeatureSimpleFillSymbol
 from renderer.feature.symbols.simpleMarkerSymbol import SimpleMarkerSymbol
 
@@ -39,9 +40,14 @@ class SymbolPropertiesProvider:
                         FeatureLineFillSymbol.create_feature_line_fill_symbol(line_fill_symbol)
                     )
                 elif marker_fill_symbol:
-                    symbol_properties['layer'].append(
-                        FeatureMarkerFillSymbol.create_feature_marker_fill_symbol(marker_fill_symbol)
-                    )
+                    if marker_fill_symbol.Style == 0:
+                        symbol_properties['layer'].append(
+                            FeatureMarkerFillSymbol.create_feature_marker_fill_symbol(marker_fill_symbol)
+                        )
+                    elif marker_fill_symbol.Style == 1:
+                        symbol_properties['layer'].append(
+                            RandomMarkerFillSymbol.create_feature_marker_fill_symbol(marker_fill_symbol)
+                        )
                 elif gradient_fill_symbol:
                     symbol_properties['layer'].append(
                         FeatureGradientFillSymbol.create_feature_gradient_fill_symbol(gradient_fill_symbol)
