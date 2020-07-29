@@ -10,6 +10,7 @@ from comtypes.client import CreateObject
 
 from map import brokenLayers
 from map.layerTree import LayerTree
+from map.metadata import Metadata
 from map.visibilityPresets import VisibilityPresets
 from modules.functions import change_interface
 from modules.arcGisModules import ArcGisModules
@@ -34,14 +35,14 @@ def main():
 
     xml_document = Document()
 
-    header = create_header(xml_document)
-
     arcpy.AddMessage("Scanning Project and collecting Layer-Information")
 
     # take Infos from opened ArcMap-Project -> to access the arcObjects
     arc_app = CreateObject(ArcGisModules.module_framework.AppROT, interface=ArcGisModules.module_framework.IAppROT)
     arc_doc = change_interface(arc_app.Item(0).Document, ArcGisModules.module_map_ui.IMxDocument)
     arc_doc_info = change_interface(arc_doc, ArcGisModules.module_carto.IDocumentInfo2)
+
+    header = create_header(xml_document, arc_doc_info)
 
     if not arc_doc.ActiveView.IsMapActivated:
         arc_doc.ActiveView = arc_doc.FocusMap
@@ -83,7 +84,7 @@ def main():
 
     arcpy.AddMessage("Creating Layout")
     layout = Layout(xml_document, header, arc_doc, mxd).create_layout()
-
+    Metadata.create_metadata(xml_document, header, arc_app)
     try:
         xml_document.writexml(qgs_file, indent="  ", addindent="  ", newl="\n", encoding="UTF-8")
         arcpy.AddMessage("Project saved!")
