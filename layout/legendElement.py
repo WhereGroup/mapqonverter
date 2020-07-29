@@ -87,6 +87,9 @@ class LegendElement(LayoutItem):
         style_dict = {'title': {
             'style': {},
             'styleFont': {},
+        }, 'subgroup': {
+            'style': {},
+            'styleFont': {},
         }, 'symbolLabel': {
             'style': {},
             'styleFont': {},
@@ -99,12 +102,22 @@ class LegendElement(LayoutItem):
             legend_format.TitleSymbol)
         style_dict['title']['styleFont']['style'] = ""
 
+        style_dict['subgroup']['style']['name'] = 'subgroup'
+        style_dict['subgroup']['style']['marginLeft'] = legend_format.HorizontalPatchGap / 2.835
+        style_dict['subgroup']['style']['marginTop'] = legend_format.GroupGap / 2.835
+        style_dict['subgroup']['style']['marginBottom'] = legend_format.HeadingGap / 2.835
+        style_dict['subgroup']['style']['alignment'] = 1
+        style_dict['subgroup']['styleFont']['description'] = LegendElement.get_label_font_description(
+            legend_frame[0].LayerNameSymbol
+        )
+        style_dict['subgroup']['styleFont']['style'] = ""
+
         style_dict['symbolLabel']['style']['name'] = 'symbolLabel'
-        style_dict['symbolLabel']['style']['marginLeft'] = legend_format.HorizontalPatchGap / 2.835
-        style_dict['symbolLabel']['style']['marginTop'] = legend_format.VerticalPatchGap / 2.835
+        style_dict['symbolLabel']['style']['marginLeft'] = legend_format.HorizontalItemGap / 2.835
+        style_dict['symbolLabel']['style']['marginTop'] = legend_format.VerticalItemGap / 2.835
         style_dict['symbolLabel']['style']['alignment'] = 1
         style_dict['symbolLabel']['styleFont']['description'] = LegendElement.get_label_font_description(
-            legend_frame[0].LayerNameSymbol
+            legend_frame[0].LegendClassFormat.DescriptionSymbol
         )
         style_dict['symbolLabel']['styleFont']['style'] = ""
 
