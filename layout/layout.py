@@ -49,6 +49,8 @@ class Layout:
             except (KeyError, Exception):
                 continue
 
+        self.arc_doc.PageLayout.Page.Units = UnitProvider.get_origin_unit()
+
     def create_base_layout_element(self):
         """
         This the creation for the layout, background, etc what is necessary for the layout in general not item-specific
