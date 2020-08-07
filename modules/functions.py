@@ -2,6 +2,10 @@ import _ctypes
 import arcpy
 
 
+def is_close(a, b, rel_tol=1e-9, abs_tol=0.0):
+    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+
 def convert_int_to_rgb_string(rgb_int):
     """ This function converts a RGB-Int value to a Standard RGB-String
         The Alpha Value is fixed.
