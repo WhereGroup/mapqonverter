@@ -29,7 +29,7 @@ class LayoutItemPropertiesProvider:
         if properties is None:
             properties = LayoutItemPropertiesProvider.get_item_properties(layout_item)
         layout_item_type = properties.Type
-        if layout_item_type == u'Map Surround Frame':
+        if layout_item_type == u'Map Surround Frame' or layout_item_type == u'Kartenumgebungsrahmen':
             map_surround_frame = change_interface(layout_item, ArcGisModules.module_carto.IMapSurroundFrame)
             legend = change_interface(map_surround_frame.MapSurround, ArcGisModules.module_carto.ILegend2)
             north_arrow = change_interface(map_surround_frame.MapSurround, ArcGisModules.module_carto.INorthArrow)
@@ -40,4 +40,6 @@ class LayoutItemPropertiesProvider:
                 layout_item_type = u'North Arrow'
             if scale_bar:
                 layout_item_type = u'Scale Bar'
+        if layout_item_type == u'Datenrahmen':
+            layout_item_type = u'Data Frame'
         return layout_item_type
