@@ -74,15 +74,12 @@ class ScaleBarElement(LayoutItem):
 
         scale_line = change_interface(scale_bar, ArcGisModules.module_carto.IScaleLine)
         if scale_line:
-            layout_item_base_element.setAttribute('numSegments',
-                                                  unicode(
-                                                      (scale_bar.Divisions - scale_bar.DivisionsBeforeZero) * 
-                                                      scale_bar.Subdivisions
-                                                  )
-                                                  )
-            layout_item_base_element.setAttribute('numUnitsPerSegment', unicode(
-                scale_bar.Division / scale_bar.Subdivisions)
-                                                  )
+            num_segments = unicode((scale_bar.Divisions - scale_bar.DivisionsBeforeZero) *
+                                                      scale_bar.Subdivisions) if scale_bar.Subdivisions > 0 else  unicode(scale_bar.Divisions - scale_bar.DivisionsBeforeZero)
+            layout_item_base_element.setAttribute('numSegments',num_segments)
+            num_units_per_segment = unicode(scale_bar.Division / scale_bar.Subdivisions) \
+                if not scale_bar.Subdivisions == 0 else unicode(scale_bar.Division)
+            layout_item_base_element.setAttribute('numUnitsPerSegment', unicode(num_units_per_segment))
             layout_item_base_element.setAttribute('style', dict_line_style[scale_marks.MarkPosition])
 
         double_fill_scale_bar = change_interface(scale_bar, ArcGisModules.module_carto.IDoubleFillScaleBar)
