@@ -6,7 +6,7 @@ from layoutUuidProvider import LayoutUuidProvider
 from zValueProvider import ZValueProvider
 from layoutItemPropertiesProvider import LayoutItemPropertiesProvider
 from modules.arcGisModules import ArcGisModules
-from modules.functions import convert_int_to_rgb_string, change_interface
+from modules.functions import convert_int_to_rgb_string, change_interface, is_close
 
 
 class LayoutItem:
@@ -157,10 +157,10 @@ class LayoutItem:
             result = True
         elif filter_type == 'GRAPHIC_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and round(arcpy_object.elementPositionY * convert_unit_factor, 2) == round(
-                    i_element.Geometry.Envelope.YMin, 2) \
-                and round(arcpy_object.elementPositionX * convert_unit_factor, 2) == round(
-                    i_element.Geometry.Envelope.XMin, 2):
+                and is_close(arcpy_object.elementPositionY * convert_unit_factor,
+                    i_element.Geometry.Envelope.YMax,abs_tol=0.01) \
+                and is_close(arcpy_object.elementPositionX * convert_unit_factor,
+                    i_element.Geometry.Envelope.XMin, abs_tol=0.01):
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
