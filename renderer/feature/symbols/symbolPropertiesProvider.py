@@ -5,6 +5,7 @@ from renderer.feature.fills.lineFillSymbol import FeatureLineFillSymbol
 from renderer.feature.fills.markerFillSymbol import FeatureMarkerFillSymbol
 from renderer.feature.fills.randomMarkerFill import RandomMarkerFillSymbol
 from renderer.feature.fills.simpleFillSymbol import FeatureSimpleFillSymbol
+from renderer.feature.symbols.charcterMarkerSymbol import CharacterMarkerSymbol
 from renderer.feature.symbols.simpleMarkerSymbol import SimpleMarkerSymbol
 
 
@@ -104,8 +105,16 @@ class SymbolPropertiesProvider:
             symbol_collection = SymbolPropertiesProvider.get_multilayer_symbol_collection(multilayer_symbol)
 
             for symbol in symbol_collection:
-                symbol_properties['layer'].append(
-                    SimpleMarkerSymbol.create_simple_marker_symbol(symbol))
+                font_marker = change_interface(symbol, ArcGisModules.module_display.ICharacterMarkerSymbol)
+
+                if font_marker:
+                    symbol_properties['layer'].append(
+                        CharacterMarkerSymbol.create_character_marker_symbol(font_marker)
+                    )
+                else:
+                    symbol_properties['layer'].append(
+                        SimpleMarkerSymbol.create_simple_marker_symbol(symbol)
+                    )
         else:
             symbol_properties['layer'].append(
                 SimpleMarkerSymbol.create_simple_marker_symbol(i_symbol))

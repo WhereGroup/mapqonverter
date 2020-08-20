@@ -31,8 +31,8 @@ class SimpleSymbol:
             for key, value in layer['dict_symbols'].items():
 
                 symbol_properties_element = xml_document.createElement("prop")
-                symbol_properties_element.setAttribute("k", str(key))
-                symbol_properties_element.setAttribute("v", str(value))
+                symbol_properties_element.setAttribute("k", unicode(key))
+                symbol_properties_element.setAttribute("v", unicode(value))
                 renderer_layer_element.appendChild(symbol_properties_element)
 
             data_defined_properties_element = xml_document.createElement("data_defined_properties")
