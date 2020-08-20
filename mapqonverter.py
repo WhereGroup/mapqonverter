@@ -8,6 +8,7 @@ import os
 import arcpy
 from comtypes.client import CreateObject
 
+from logging.logger import Logger
 from map import brokenLayers
 from map.layerTree import LayerTree
 from map.metadata import Metadata
@@ -30,8 +31,11 @@ def main():
         export_name_short = export_name[:-4]
     else:
         export_name_short = export_name
+
     qgs_file_name = "{}.qgs".format(export_name_short)
     qgs_file = codecs.open(qgs_file_name, "w", encoding="utf-8")
+
+    Logger.get_logger(export_name_short)
 
     xml_document = Document()
 
