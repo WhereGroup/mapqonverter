@@ -84,7 +84,10 @@ def main():
 
     arcpy.AddMessage("Creating Layout")
     layout = Layout(xml_document, header, arc_doc, mxd).create_layout()
+
+    arcpy.AddMessage("Creating Metadata")
     Metadata.create_metadata(xml_document, header, arc_app)
+
     try:
         xml_document.writexml(qgs_file, indent="  ", addindent="  ", newl="\n", encoding="UTF-8")
         arcpy.AddMessage("Project saved!")
@@ -101,7 +104,7 @@ def main():
             newzip.write(qgs_file_name, os.path.basename(qgs_file.name))
             newzip.write(qgd_file_name, os.path.basename(qgd_file.name))
 
-        print 'and zipped.'
+        arcpy.AddMessage(' and zipped.')
         try:
             os.remove(qgs_file_name)
             os.remove(qgd_file_name)
