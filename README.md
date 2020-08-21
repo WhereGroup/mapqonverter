@@ -43,19 +43,18 @@ The legend, including Grouplayer and nested structures.
 
 * Marker
   * Simple-Marker
-    * EsriMarker/CharacterMarker are not yet supported.
+  * Character-Marker
 * Lines
   * Hash-Lines
   * Marker-Lines
   * Simple-Lines
   * Cartographic-Lines
-  * Simple-Lines
 * Fills
   * Gradient-Fill
     * RadialFill is not yet supported.
   * Line-Fill
   * Marker-Fill
-    * Random-Fill is not yet supported.
+  * Random-Fill
   * Simple-Fill
   * Outlines -> QGIS Rand (Simple, Marker, Hashed)  
 * Multi-Layer-Symbols
@@ -64,10 +63,7 @@ The legend, including Grouplayer and nested structures.
 	
 #### WMS-Layer
 
-* just tested with raster-based WMS.
-
 #### GeoDataBase-Annotation – Layer
-  * Just Annotations - GeoDataBase-Geometries are not yet supported.
 
 #### Database-Layer
   * Just Postgresql is fully tested
@@ -75,5 +71,17 @@ The legend, including Grouplayer and nested structures.
 #### Labels
   * Simple Labels are supported, for example city-/country-names. Complex logical expressions are hardly translatable from VBScript (ArcMap) zur QGIS Expressions Engine. 
 
-## Packages
+#### Layout
+* The Layout will be safed as "Imported Layout"
+    * Basic NorthArrow will be exported
+    * Legend 
+    * Polygone, Ellipses, Line-, and PolyLine-Elements
+    * ScaleBars 
+    * TextElements
+    * Pictures
+
+#### Logging
+* A Logfile is generated after the Export in the Folder "logs"
+
+### Packages
 [comtypes](https://pypi.org/project/comtypes/)
