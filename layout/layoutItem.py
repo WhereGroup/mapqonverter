@@ -158,9 +158,9 @@ class LayoutItem:
         elif filter_type == 'GRAPHIC_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
                 and is_close(arcpy_object.elementPositionY * convert_unit_factor,
-                    i_element.Geometry.Envelope.YMax,abs_tol=0.01) \
+                    i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
                 and is_close(arcpy_object.elementPositionX * convert_unit_factor,
-                    i_element.Geometry.Envelope.XMin, abs_tol=0.01):
+                    i_element.Geometry.Envelope.XMin, abs_tol=0.20):
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \

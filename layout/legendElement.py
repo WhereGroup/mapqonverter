@@ -70,7 +70,7 @@ class LegendElement(LayoutItem):
         LegendElement.create_style_element(self, legend_format, legend_frame, layout_item_base_element)
         LegendElement.create_layer_tree_element(self, legend_frame, layout_item_base_element)
 
-        column_count = 1
+        column_count = 0
         for index in range(0, legend_frame.ItemCount):
             if legend_frame[index].NewColumn:
                 column_count += 1
