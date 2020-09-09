@@ -22,12 +22,13 @@ class Logger:
             logtime=log_time
         )
         log_format = '%(asctime)s in %(module)s %(levelname)s: %(message)s'
-        logging.basicConfig(filename=log_file_name,
-                            filemode='a',
-                            format=log_format,
-                            datefmt='%H:%M:%S',
-                            level=logging.INFO
-                            )
+
         logger = logging.getLogger()
+
+        logger.setLevel(logging.INFO)
+        handler = logging.FileHandler(log_file_name)
+        formatter = logging.Formatter(log_format, '%H:%M:%S')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 
         return logger
