@@ -17,7 +17,7 @@ class Logger:
         if not os.path.isdir(logs_directory):
             os.mkdir(logs_directory)
         log_time = str(datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S"))
-        log_file_name = logs_directory + "\\logFile-{project_name}-{logtime}.txt".format(
+        log_file_name = logs_directory + u"\\logFile-{project_name}-{logtime}.txt".format(
             project_name=export_name_parts[2],
             logtime=log_time
         )
