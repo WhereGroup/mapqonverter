@@ -138,33 +138,64 @@ class LayoutItem:
         result = False
         i_element = change_interface(arc_object_item, ArcGisModules.module_carto.IElement)
 
-        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
-
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and arcpy_object.text == arc_object_item.Text:
+                and arcpy_object.text == arc_object_item.Text \
+                and LayoutItem.compare_position(arcpy_object, i_element, is_text_element=True):
             result = True
         elif filter_type == 'DATAFRAME_ELEMENT' \
-                and arcpy_object.name == arc_object_item_properties.Name:
+                and arcpy_object.name == arc_object_item_properties.Name \
+                and LayoutItem.compare_position(arcpy_object, i_element):
             result = True
         elif filter_type == 'LEGEND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
+                and LayoutItem.compare_position(arcpy_object, i_element)\
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'MAPSURROUND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
+                and LayoutItem.compare_position(arcpy_object, i_element) \
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'GRAPHIC_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and is_close(arcpy_object.elementPositionY * convert_unit_factor,
-                    i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
-                and is_close(arcpy_object.elementPositionX * convert_unit_factor,
-                    i_element.Geometry.Envelope.XMin, abs_tol=0.20):
+                and LayoutItem.compare_position(arcpy_object, i_element):
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
+                and LayoutItem.compare_position(arcpy_object, i_element)\
                 and arcpy_object.sourceImage[-3:] in arc_object_item.Filter:
+            result = True
+
+        return result
+
+    @staticmethod
+    def compare_position(arcpy_object, i_element, is_text_element=False):
+        """
+        Compares the the ArcObject with the Arcpy Layoutitem depending on the layout position
+        :param arcpy_object: the arcpy object of the layoutitem
+        :param i_element: the arcobject element of the layoutitem
+        :param is_text_element: Boolean indicates if element is text-element - default False
+        """
+
+        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
+        result = False
+
+        # The Arcpy Text-Element has another default anchor-point than the arcObject,
+        # because of that the comparison is so weird
+
+        if is_text_element:
+            if is_close((arcpy_object.elementPositionY * convert_unit_factor)
+                        + (arcpy_object.elementHeight * convert_unit_factor),
+                        i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+                and is_close((arcpy_object.elementPositionX * convert_unit_factor)
+                             + (arcpy_object.elementWidth * convert_unit_factor / 2),
+                             i_element.Geometry.Envelope.XMin, abs_tol=15):
+                result = True
+        if is_close(arcpy_object.elementPositionY * convert_unit_factor,
+                    i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+            and is_close(arcpy_object.elementPositionX * convert_unit_factor,
+                         i_element.Geometry.Envelope.XMin, abs_tol=0.20):
             result = True
 
         return result
