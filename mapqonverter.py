@@ -32,7 +32,7 @@ def main():
     else:
         export_name_short = export_name
 
-    qgs_file_name = "{}.qgs".format(export_name_short)
+    qgs_file_name = u"{}.qgs".format(export_name_short)
     qgs_file = codecs.open(qgs_file_name, "w", encoding="utf-8")
 
     Logger.get_logger(export_name_short)
@@ -100,11 +100,11 @@ def main():
         qgs_file.close()
 
     if export_name.endswith(".qgz"):
-        qgd_file_name = "{}.qgd".format(export_name_short)
+        qgd_file_name = u"{}.qgd".format(export_name_short)
         qgd_file = open(qgd_file_name, "w")
         qgd_file.close()
 
-        with ZipFile("{}.qgz".format(export_name_short), "w") as newzip:
+        with ZipFile(u"{}.qgz".format(export_name_short), "w") as newzip:
             newzip.write(qgs_file_name, os.path.basename(qgs_file.name))
             newzip.write(qgd_file_name, os.path.basename(qgd_file.name))
 
