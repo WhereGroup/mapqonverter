@@ -142,17 +142,35 @@ class LayoutItem:
 
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and arcpy_object.text == arc_object_item.Text:
+                and arcpy_object.text == arc_object_item.Text \
+                and is_close((arcpy_object.elementPositionY * convert_unit_factor)
+                             + (arcpy_object.elementHeight * convert_unit_factor),
+                             i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+                and is_close((arcpy_object.elementPositionX * convert_unit_factor)
+                             + (arcpy_object.elementWidth * convert_unit_factor /2),
+                             i_element.Geometry.Envelope.XMin, abs_tol=15):
             result = True
         elif filter_type == 'DATAFRAME_ELEMENT' \
-                and arcpy_object.name == arc_object_item_properties.Name:
+                and arcpy_object.name == arc_object_item_properties.Name \
+                and is_close(arcpy_object.elementPositionY * convert_unit_factor,
+                             i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+                and is_close(arcpy_object.elementPositionX * convert_unit_factor,
+                             i_element.Geometry.Envelope.XMin, abs_tol=0.20):
             result = True
         elif filter_type == 'LEGEND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
+                and is_close(arcpy_object.elementPositionY * convert_unit_factor,
+                             i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+                and is_close(arcpy_object.elementPositionX * convert_unit_factor,
+                             i_element.Geometry.Envelope.XMin, abs_tol=0.20)\
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'MAPSURROUND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
+                and is_close(arcpy_object.elementPositionY * convert_unit_factor,
+                             i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+                and is_close(arcpy_object.elementPositionX * convert_unit_factor,
+                             i_element.Geometry.Envelope.XMin, abs_tol=0.20) \
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'GRAPHIC_ELEMENT' \
@@ -164,6 +182,10 @@ class LayoutItem:
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
+                and is_close(arcpy_object.elementPositionY * convert_unit_factor,
+                             i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
+                and is_close(arcpy_object.elementPositionX * convert_unit_factor,
+                             i_element.Geometry.Envelope.XMin, abs_tol=0.20) \
                 and arcpy_object.sourceImage[-3:] in arc_object_item.Filter:
             result = True
 
