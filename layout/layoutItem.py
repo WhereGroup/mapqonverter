@@ -186,17 +186,19 @@ class LayoutItem:
         except (AttributeError, ValueError):
             border_gap = 0
 
-        anchor_point = arc_object_item_properties.AnchorPoint
+        item_anchor_point = arc_object_item_properties.AnchorPoint
 
-        arc_object_x_and_y = LayoutItem.get_x_and_y_depending_on_anchorpoint(anchor_point, arcpy_object)
+        anchor_point_list = LayoutItem.get_anchorpoint_list(item_anchor_point, arcpy_object)
 
         if is_close(i_element.Geometry.Envelope.Xmin * convert_unit_factor - border_gap,
-                    arc_object_x_and_y[anchor_point][0], abs_tol=0.1) and \
+                    anchor_point_list[item_anchor_point][0], abs_tol=0.1) and \
                 is_close(i_element.Geometry.Envelope.Ymin * convert_unit_factor - border_gap,
-                         arc_object_x_and_y[anchor_point][1], abs_tol=0.1):
+                         anchor_point_list[item_anchor_point][1], abs_tol=0.1):
             result = True
+        # If the given anchorpoint, does not work - text-items have a default anchorpoint for example
+        # Check for given coordinates in the whole anchorpoint-list/raster
         else:
-            for coordinate_pair in arc_object_x_and_y:
+            for coordinate_pair in anchor_point_list:
                 if is_close(i_element.Geometry.Envelope.Xmin * convert_unit_factor - border_gap,
                             coordinate_pair[0], abs_tol=0.1) and \
                         is_close(i_element.Geometry.Envelope.Ymin * convert_unit_factor - border_gap,
@@ -207,7 +209,7 @@ class LayoutItem:
         return result
 
     @staticmethod
-    def get_x_and_y_depending_on_anchorpoint(anchorpoint, arcpy_object):
+    def get_anchorpoint_list(anchorpoint, arcpy_object):
         """
         Here the different anchorpoints for an item will be generated
         :param anchorpoint: the anchorpoint of the layout-item
