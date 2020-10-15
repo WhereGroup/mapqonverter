@@ -174,6 +174,21 @@ class RasterRenderer:
         stretch_params = raster_stretch.StandardDeviationsParam
         raster_renderer_element.getElementsByTagName('stdDevFactor')[0].firstChild.nodeValue = unicode(stretch_params)
 
+        no_data_element = base.xml_document.createElement("noData")
+        for band_index in range(1, 4):
+            no_data_list_element = base.xml_document.createElement("noDataList")
+            no_data_list_element.setAttribute("bandNo", unicode(band_index))
+            no_data_list_element.setAttribute("useSrcNoData", "0")
+
+            no_data_range_element = base.xml_document.createElement("noDataRange")
+            no_data_range_element.setAttribute("min", "0")
+            no_data_range_element.setAttribute("max", "0")
+
+            no_data_list_element.appendChild(no_data_range_element)
+            no_data_element.appendChild(no_data_list_element)
+
+        base.map_layer_element.appendChild(no_data_element)
+
         if not raster_stretch.StretchType == 0:
             # find the statistics for the 3 bands
             arc_raster = arc_raster_layer.Raster
