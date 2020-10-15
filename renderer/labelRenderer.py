@@ -11,23 +11,27 @@ class LabelRenderer:
         pass
 
     @staticmethod
-    def get_label_dict(base, renderer_type):
+    def get_label_dict(base):
         """ This function collects all properties of the label and returns them as a dictionary
 
-        :param base: the renderer-object
-        :param renderer_type: the type of the used renderer
+        :param base: is the self of the renderer object containing:
+            base.xml_document = xml_document
+            base.map_layer_element = map_layer_element
+            base.arcLayer = arc_layer
+            base.layer = layer
+            base.rendererType = rendererType
         :return: the label dictionary including all the label properties
         """
         label_dict = copy.deepcopy(labelDict)
         symbol = None
-        if renderer_type == "gdb":
+        if base.rendererType == "gdb":
             symbol = LabelRenderer.get_gdb_symbol(base.arcLayer)
             annotation_class_id = LabelRenderer.get_annotation_class_id(base.arcLayer)
 
             label_dict['labelValues']['type'] = 'rule-based'
             label_dict['labelValues']['classId'] = str(annotation_class_id)
             label_dict['labelValues']['text-style']['fieldName'] = 'TextString'
-        elif renderer_type == "feature":
+        elif base.rendererType == "feature":
             symbol = LabelRenderer.specify_feature_content(base.arcLayer, label_dict)
 
         formatted_symbol = change_interface(symbol, ArcGisModules.module_display.IFormattedTextSymbol)
