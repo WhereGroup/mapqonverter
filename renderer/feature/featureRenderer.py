@@ -17,7 +17,12 @@ class FeatureRenderer:
     def create_feature_renderer(base):
         """This creates the feature-renderer-element in the DOM
 
-        :param base: is the self of the renderer object
+        :param base: is the self of the renderer object containing:
+            base.xml_document = xml_document
+            base.map_layer_element = map_layer_element
+            base.arcLayer = arc_layer
+            base.layer = layer
+            base.rendererType = renderer_type
         """
         renderer = base.xml_document.createElement("renderer-v2")
         renderer.setAttribute("forceraster", "0")

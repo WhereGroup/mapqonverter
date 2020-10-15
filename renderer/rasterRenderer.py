@@ -13,7 +13,12 @@ class RasterRenderer:
     def create_raster_renderer_basic(base):
         """ This creates the basic raster-renderer-element in the DOM
 
-        :param base: is the self of the renderer object
+        :param base: is the self of the renderer object containing:
+            base.xml_document = xml_document
+            base.map_layer_element = map_layer_element
+            base.arcLayer = arc_layer
+            base.layer = layer
+            base.rendererType = renderer_type
         :return: pipe_element, raster_renderer_element
         """
         pipe_element = base.xml_document.createElement("pipe")
@@ -102,7 +107,12 @@ class RasterRenderer:
     def adapt_raster_renderer(base, raster_renderer_element):
         """ here the base renderer is adapted with the specific raster-renderer-content
 
-        :param base: is the self of the renderer object
+        :param base: is the self of the renderer object containing:
+            base.xml_document = xml_document
+            base.map_layer_element = map_layer_element
+            base.arcLayer = arc_layer
+            base.layer = layer
+            base.rendererType = renderer_type
         :param raster_renderer_element: the raster_renderer_element of the DOM
         """
         arc_raster_layer = change_interface(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
@@ -118,7 +128,12 @@ class RasterRenderer:
     def _create_stretched_renderer(base, raster_renderer_element, arc_raster_layer):
         """ This creates the stretched renderer content
 
-        :param base: is the self of the renderer object
+        :param base: is the self of the renderer object containing:
+            base.xml_document = xml_document
+            base.map_layer_element = map_layer_element
+            base.arcLayer = arc_layer
+            base.layer = layer
+            base.rendererType = renderer_type
         :param raster_renderer_element: the raster_renderer_element of the DOM
         :param arc_raster_layer: ArcObject of the raster_layer
         """
@@ -157,7 +172,12 @@ class RasterRenderer:
     def _create_rgb_composite_renderer(base, raster_renderer_element, arc_raster_layer):
         """ This creates the rgb-composite renderer content
 
-        :param base: is the self of the renderer object
+        :param base: is the self of the renderer object containing:
+            base.xml_document = xml_document
+            base.map_layer_element = map_layer_element
+            base.arcLayer = arc_layer
+            base.layer = layer
+            base.rendererType = renderer_type
         :param raster_renderer_element: the raster_renderer_element of the DOM
         :param arc_raster_layer: ArcObject of the raster_layer
         """
