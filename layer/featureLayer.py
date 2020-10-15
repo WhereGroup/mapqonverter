@@ -27,10 +27,10 @@ class FeatureLayer:
             provider.setAttribute("encoding", "UTF-8")
             provider.appendChild(base.xml_document.createTextNode("ogr"))
             if ".gdb" in base.gdb_path:
-                datasource_path = '|layername='.join(base.layer.dataSource.rsplit('\\', 1))
+                datasource_path = '|layername='.join(unicode(base.layer.dataSource.rsplit('\\', 1)))
                 datasource.appendChild(base.xml_document.createTextNode(datasource_path))
             else:
-                datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
+                datasource.appendChild(base.xml_document.createTextNode(unicode(base.layer.dataSource)))
             if len(base.layer.definitionQuery) > 0:
                 datasource.firstChild.nodeValue = datasource.firstChild.nodeValue + "|layerid=0|subset=" \
                                                   + base.layer.definitionQuery
@@ -44,10 +44,7 @@ class FeatureLayer:
                     LabelRenderer.create_labels(
                         base,
                         map_layer_element,
-                        label_dict=LabelRenderer.get_label_dict(
-                            renderer,
-                            renderer_type='feature'
-                        )
+                        label_dict=LabelRenderer.get_label_dict(renderer)
                     )
             arcpy.AddWarning(
                 "\t\tLabels have been converted. Complex Labeling is not supported. Check QGIS-File for result!"
