@@ -178,7 +178,6 @@ class LayoutItem:
         :param arc_object_item_properties: the properties of the arcobject element
         """
         i_element = change_interface(arc_object_item, ArcGisModules.module_carto.IElement)
-        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
         result = False
 
         try:
@@ -190,18 +189,18 @@ class LayoutItem:
 
         anchor_point_list = LayoutItem.get_anchorpoint_list(item_anchor_point, arcpy_object)
 
-        if is_close(i_element.Geometry.Envelope.Xmin * convert_unit_factor - border_gap,
+        if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
                     anchor_point_list[item_anchor_point][0], abs_tol=0.1) and \
-                is_close(i_element.Geometry.Envelope.Ymin * convert_unit_factor - border_gap,
+                is_close(i_element.Geometry.Envelope.Ymin - border_gap,
                          anchor_point_list[item_anchor_point][1], abs_tol=0.1):
             result = True
         # If the given anchorpoint, does not work - text-items have a default anchorpoint for example
         # Check for given coordinates in the whole anchorpoint-list/raster
         else:
             for coordinate_pair in anchor_point_list:
-                if is_close(i_element.Geometry.Envelope.Xmin * convert_unit_factor - border_gap,
+                if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
                             coordinate_pair[0], abs_tol=0.1) and \
-                        is_close(i_element.Geometry.Envelope.Ymin * convert_unit_factor - border_gap,
+                        is_close(i_element.Geometry.Envelope.Ymin - border_gap,
                                  coordinate_pair[1], abs_tol=0.1):
                     result = True
                     break
