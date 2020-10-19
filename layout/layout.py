@@ -50,7 +50,7 @@ class Layout:
                 Layout.create_item_content(self, item_type, item, layout_element_dom)
             except (KeyError, Exception):
                 item_properties = change_interface(item, ArcGisModules.module_carto.IElementProperties3)
-                logging.error("Error while exporting {} - type: {}".format(item_properties.Name, item_properties.Type))
+                logging.error(u"Error while exporting {} - type: {}".format(item_properties.Name, item_properties.Type))
                 continue
 
         self.arc_doc.PageLayout.Page.Units = UnitProvider.get_origin_unit()
@@ -157,7 +157,7 @@ class Layout:
             picture_element.create_picture_content(picture_element_layout)
 
         else:
-            logging.info("{} is not yet supported".format(layout_item_type))
+            logging.info(u"{} is not yet supported".format(layout_item_type))
 
     def get_layout_items(self):
         """
