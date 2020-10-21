@@ -38,6 +38,7 @@ class FeatureRenderer:
         arc_feature_layer = change_interface(base.arcLayer, ArcGisModules.module_carto.IFeatureLayer)
         arc_geo_feature_layer = change_interface(arc_feature_layer, ArcGisModules.module_carto.IGeoFeatureLayer)
         simple_renderer = arc_geo_feature_layer.Renderer
+        unique_value_renderer = change_interface(simple_renderer, ArcGisModules.module_carto.IUniqueValueRenderer)
 
         # get a feature, mostly 0 , but can be higher, if using objects from a db -> than takes the id
         feature = None
@@ -53,11 +54,11 @@ class FeatureRenderer:
             print "Something went wrong. Are you using a DB where the IDs start at 1001?"
             pass
 
-        if base.layer.symbologyType == "OTHER":
+        if base.layer.symbologyType == "OTHER" and not unique_value_renderer:
             renderer.setAttribute("type", "singleSymbol")
             symbols.append(simple_renderer.SymbolByFeature(feature))
 
-        elif base.layer.symbologyType == "UNIQUE_VALUES":
+        elif base.layer.symbologyType == "UNIQUE_VALUES" or unique_value_renderer:
             UniqueValueRenderer.create_unique_values_element(base, renderer, symbols)
 
         elif base.layer.symbologyType == "GRADUATED_COLORS" or "GRADUATED_SYMBOLS":
