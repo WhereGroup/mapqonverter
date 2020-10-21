@@ -14,25 +14,29 @@ class UniqueValueRenderer:
         :param renderer: is the renderer-element in the DOM
         :param symbols: is the list of used symbols of the renderer
         """
+        geo_feature_layer = change_interface(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
+        unique_renderer = change_interface(geo_feature_layer.Renderer, ArcGisModules.module_carto.IUniqueValueRenderer)
+
         renderer.setAttribute("type", "categorizedSymbol")
-        renderer.setAttribute("attr", base.layer.symbology.valueField)
-
-        unique_layer = change_interface(base.arcLayer, ArcGisModules.module_carto.IGeoFeatureLayer)
-        unique_renderer = change_interface(unique_layer.Renderer, ArcGisModules.module_carto.IUniqueValueRenderer)
-
-        for each in base.layer.symbology.classLabels:
-            symbols.append(unique_renderer.Symbol[each])
+        renderer.setAttribute("attr", unique_renderer.Field[0])
 
         categories_element = base.xml_document.createElement("categories")
         renderer.appendChild(categories_element)
 
-        labels = base.layer.symbology.classLabels
-        label_values = base.layer.symbology.classValues
+        last_index = unique_renderer.ValueCount
+        for index in range(0, last_index + 1):
+            value = "" if index == last_index else unique_renderer.Value[index]
 
-        for index, (label, value) in enumerate(zip(labels, label_values)):
+            symbols.append(
+                unique_renderer.DefaultSymbol if index == last_index else unique_renderer.Symbol[value]
+            )
+
             category_element = base.xml_document.createElement("category")
             category_element.setAttribute("render", "true")
             category_element.setAttribute("symbol", str(index))
-            category_element.setAttribute("label", label)
             category_element.setAttribute("value", value)
+            category_element.setAttribute("label",
+                                          unique_renderer.DefaultLabel if index == last_index
+                                          else unique_renderer.Label[value]
+                                          )
             categories_element.appendChild(category_element)
