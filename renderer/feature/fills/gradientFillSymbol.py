@@ -51,36 +51,7 @@ class FeatureGradientFillSymbol:
         symbol_properties['dict_symbols']['outline_color'] = str(convert_int_to_rgb_string(i_symbol.Outline.Color.RGB))
         symbol_properties['dict_symbols']['outline_width'] = str(i_symbol.Outline.Width)
 
-        multi_gradient_fill = change_interface(i_symbol.ColorRamp, ArcGisModules.module_display.IMultiPartColorRamp)
-
-        symbol_properties['dict_symbols']['stops'] = ""
-
-        if multi_gradient_fill:
-
-            if radial_fill:
-                number_of_ramps = reversed(range(1, multi_gradient_fill.NumberOfRamps + 1))
-            else:
-                number_of_ramps = range(1, multi_gradient_fill.NumberOfRamps + 1)
-            color_range = 0.0
-            for ramp in number_of_ramps:
-                color_range_temp = FeatureGradientFillSymbol.write_multi_gradient_colors_in_dict(
-                    multi_gradient_fill,
-                    ramp,
-                    color_range,
-                    radial_fill,
-                    symbol_properties,
-                )
-
-                color_range = color_range_temp
-
-            symbol_properties['dict_symbols']['color_type'] = "1"
-
-        else:
-            FeatureGradientFillSymbol.write_solo_gradient_colors_in_dict(
-                i_symbol,
-                radial_fill,
-                symbol_properties
-            )
+        FeatureGradientFillSymbol.create_color_ramp_properties(i_symbol.ColorRamp, radial_fill, symbol_properties)
 
         return symbol_properties
 
@@ -157,14 +128,14 @@ class FeatureGradientFillSymbol:
         return color_range
 
     @staticmethod
-    def write_solo_gradient_colors_in_dict(i_symbol, radial_fill, symbol_properties):
+    def write_solo_gradient_colors_in_dict(color_ramp, radial_fill, symbol_properties):
         """This writes the the color-range of the used color-ramp of a multi_gradient_fill_symbol
 
-        :param i_symbol: The used Fill Symbol
+        :param color_ramp: The usedcolor_ramp
         :param radial_fill: This declares if the gradient has a radial fill
         :param symbol_properties: symbol_properties as dictionary
         """
-        colors = FeatureGradientFillSymbol.get_colors_from_ramp(i_symbol.ColorRamp)
+        colors = FeatureGradientFillSymbol.get_colors_from_ramp(color_ramp)
         first_color = convert_int_to_rgb_string(colors[0].RGB)
         second_color = convert_int_to_rgb_string(colors[1].RGB)
 
@@ -180,7 +151,7 @@ class FeatureGradientFillSymbol:
         symbol_properties['dict_symbols']['gradient_color2'] = color2
         symbol_properties['dict_symbols']['color_type'] = "0"
         color_range = 0.0
-        if i_symbol.ColorRamp.Size == 0:
+        if color_ramp.Size == 0:
             step_size = 0.5
         else:
             step_size = 1.0 / len(colors)
@@ -191,3 +162,37 @@ class FeatureGradientFillSymbol:
             if colorNumber != len(colors):
                 symbol_properties['dict_symbols']['stops'] += ":"
             color_range += step_size
+
+    @staticmethod
+    def create_color_ramp_properties(color_ramp, radial_fill, symbol_properties):
+        multi_gradient_fill = change_interface(color_ramp, ArcGisModules.module_display.IMultiPartColorRamp)
+
+        symbol_properties['dict_symbols']['stops'] = ""
+
+        if multi_gradient_fill:
+
+            if radial_fill:
+                number_of_ramps = reversed(range(1, multi_gradient_fill.NumberOfRamps + 1))
+            else:
+                number_of_ramps = range(1, multi_gradient_fill.NumberOfRamps + 1)
+            color_range = 0.0
+            for ramp in number_of_ramps:
+                color_range_temp = FeatureGradientFillSymbol.write_multi_gradient_colors_in_dict(
+                    multi_gradient_fill,
+                    ramp,
+                    color_range,
+                    radial_fill,
+                    symbol_properties,
+                )
+
+                color_range = color_range_temp
+
+            symbol_properties['dict_symbols']['color_type'] = "1"
+
+        else:
+            FeatureGradientFillSymbol.write_solo_gradient_colors_in_dict(
+                color_ramp,
+                radial_fill,
+                symbol_properties
+            )
+        return symbol_properties

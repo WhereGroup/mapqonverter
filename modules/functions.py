@@ -6,6 +6,10 @@ def is_close(a, b, rel_tol=1e-9, abs_tol=0.0):
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
 
+def convert_rgb_string_to_hex(rgb_string):
+    rgb_colors = rgb_string.split(",")
+    return '#{:02x}{:02x}{:02x}'.format(int(rgb_colors[0]), int(rgb_colors[1]), int(rgb_colors[2]))
+
 def convert_int_to_rgb_string(rgb_int):
     """ This function converts a RGB-Int value to a Standard RGB-String
         The Alpha Value is fixed.

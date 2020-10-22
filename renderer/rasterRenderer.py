@@ -1,8 +1,9 @@
 import re
 
 from dictionaries.raster_stretch import stretch_dict
-from modules.functions import change_interface
+from modules.functions import change_interface, convert_rgb_string_to_hex
 from modules.arcGisModules import ArcGisModules
+from feature.fills.gradientFillSymbol import FeatureGradientFillSymbol
 
 
 class RasterRenderer:
@@ -40,6 +41,30 @@ class RasterRenderer:
 
         raster_transparency_element = base.xml_document.createElement("rasterTransparency")
         raster_renderer_element.appendChild(raster_transparency_element)
+
+        raster_stretch = change_interface(arc_raster_layer.Renderer, ArcGisModules.module_carto.IRasterStretch2)
+
+        if raster_stretch and raster_stretch.Background and raster_stretch.BackgroundColor.NullColor:
+                values = raster_stretch.BackgroundValue
+                if isinstance(values, float):
+                    single_value_pixel_element = base.xml_document.createElement("singleValuePixelList")
+                    raster_transparency_element.appendChild(single_value_pixel_element)
+                    pixel_list_entry_element = base.xml_document.createElement("pixelListEntry")
+                    single_value_pixel_element.appendChild(pixel_list_entry_element)
+                    pixel_list_entry_element.setAttribute("min", unicode(int(values)))
+                    pixel_list_entry_element.setAttribute("max", unicode(int(values)))
+                    pixel_list_entry_element.setAttribute("percentTransparent", "100")
+                else:
+                    single_value_pixel_element = base.xml_document.createElement("threeValuePixelList")
+                    raster_transparency_element.appendChild(single_value_pixel_element)
+                    pixel_list_entry_element = base.xml_document.createElement("pixelListEntry")
+                    single_value_pixel_element.appendChild(pixel_list_entry_element)
+                    pixel_list_entry_element.setAttribute("red", unicode(int(values[0])))
+                    pixel_list_entry_element.setAttribute("green", unicode(int(values[1])))
+                    pixel_list_entry_element.setAttribute("blue", unicode(int(values[2])))
+                    pixel_list_entry_element.setAttribute("percentTransparent", "100")
+
+
 
         min_max_origin_element = base.xml_document.createElement("minMaxOrigin")
         raster_renderer_element.appendChild(min_max_origin_element)
@@ -118,10 +143,13 @@ class RasterRenderer:
         arc_raster_layer = change_interface(base.arcLayer, ArcGisModules.module_carto.IRasterLayer)
         renderer_name = change_interface(arc_raster_layer.Renderer, ArcGisModules.module_carto.IRasterRendererInfo).Name
 
-        if arc_raster_layer.BandCount == 1 and renderer_name == "Stretched":
-            RasterRenderer._create_stretched_renderer(base, raster_renderer_element, arc_raster_layer)
+        if renderer_name == "Stretched":
+            if arc_raster_layer.BandCount == 3:
+                RasterRenderer._create_singleband_pseudocolor_renderer(base, raster_renderer_element, arc_raster_layer)
+            else:
+                RasterRenderer._create_stretched_renderer(base, raster_renderer_element, arc_raster_layer)
 
-        if arc_raster_layer.BandCount == 3 and renderer_name == "RGB Composite":
+        if renderer_name == "RGB Composite":
             RasterRenderer._create_rgb_composite_renderer(base, raster_renderer_element, arc_raster_layer)
 
     @staticmethod
@@ -210,39 +238,7 @@ class RasterRenderer:
         base.map_layer_element.appendChild(no_data_element)
 
         if not raster_stretch.StretchType == 0:
-            # find the statistics for the 3 bands
-            arc_raster = arc_raster_layer.Raster
-            arc_raster = change_interface(arc_raster, ArcGisModules.module_data_source_raster.IRaster2)
-            arc_raster_dataset = change_interface(arc_raster.RasterDataset, ArcGisModules.module_gdb.IRasterDataset)
-            arc_raster_band_collection = change_interface(
-                arc_raster_dataset,
-                ArcGisModules.module_data_source_raster.IRasterBandCollection
-            )
-
-            bandstats = {}
-
-            for x in range(1, arc_raster_band_collection.Count + 1):
-                raster_band = arc_raster_band_collection.BandByName("Band_" + str(x))
-                try:
-                    band_minimum = raster_band.Statistics.Minimum
-                    band_maximum = raster_band.Statistics.Maximum
-                except ValueError:
-                    # arcpy.AddWarning(
-                    #    "\t\tProblem occured while reading out Band-Stats from Rasterlayer." +
-                    #    "Default Values are min = 0, max = 255. \n\t\t(If you don't know what this means, " +
-                    #    "there is probably no problem."
-                    # ) -> Log instead
-                    band_minimum = 0
-                    band_maximum = 255
-
-                bandstats.update(
-                    {x:
-                        {
-                            "min": str(int(band_minimum)),
-                            "max": str(int(band_maximum)),
-                        }
-                    }
-                )
+            bandstats = RasterRenderer._get_band_stats(arc_raster_layer.Raster)
 
             color = ["placeholder", "red", "green", "blue"]
 
@@ -270,3 +266,107 @@ class RasterRenderer:
                 )
                 renderer_contrast_algorithm_element.appendChild(renderer_contrast_algorithm_element_content)
                 raster_contrast_enhancement_element.appendChild(renderer_contrast_algorithm_element)
+
+    @staticmethod
+    def _create_singleband_pseudocolor_renderer(base, raster_renderer_element, arc_raster_layer):
+        renderer = change_interface(
+            arc_raster_layer.Renderer,
+            ArcGisModules.module_carto.IRasterStretchColorRampRenderer
+        )
+
+        color_ramp_properties = FeatureGradientFillSymbol.create_color_ramp_properties(
+            renderer.ColorRamp,
+            False,
+            {'dict_symbols': {}}
+        )
+
+        bandstats = RasterRenderer._get_band_stats(arc_raster_layer.Raster)
+        used_band_number = renderer.BandIndex + 1
+
+        raster_renderer_element.setAttribute("type", "singlebandpseudocolor")
+        raster_renderer_element.setAttribute("band", unicode(used_band_number))
+        raster_renderer_element.setAttribute("alphaBand", unicode(used_band_number))
+        raster_renderer_element.setAttribute("classificationMin", bandstats.get(used_band_number, {}).get("min"))
+        raster_renderer_element.setAttribute("classificationMax", bandstats.get(used_band_number, {}).get("max"))
+
+        rastershader_element = base.xml_document.createElement("rastershader")
+        raster_renderer_element.appendChild(rastershader_element)
+
+        colorrampshader_element = base.xml_document.createElement("colorrampshader")
+        colorrampshader_element.setAttribute("maximumValue", renderer.LabelHigh)
+        colorrampshader_element.setAttribute("minimumValue", renderer.LabelLow)
+        colorrampshader_element.setAttribute("classificationMode", "2")
+        colorrampshader_element.setAttribute("clip", "0")
+        colorrampshader_element.setAttribute("colorRampType", "INTERPOLATED")
+        rastershader_element.appendChild(colorrampshader_element)
+
+        colorramp_element = base.xml_document.createElement("colorramp")
+        colorramp_element.setAttribute("name", "[source]")
+        colorramp_element.setAttribute("type", "gradient")
+
+        color1_prop = base.xml_document.createElement("prop")
+        color1_prop.setAttribute("k", "color1")
+        color1_prop.setAttribute("v", color_ramp_properties["dict_symbols"]["color1"])
+        color2_prop = base.xml_document.createElement("prop")
+        color2_prop.setAttribute("k", "color2")
+        color2_prop.setAttribute("v", color_ramp_properties["dict_symbols"]["color2"])
+        stops_prop = base.xml_document.createElement("prop")
+        stops_prop.setAttribute("k", "stops")
+        stops_prop.setAttribute("v", color_ramp_properties["dict_symbols"]["stops"])
+        discrete_prop = base.xml_document.createElement("prop")
+        discrete_prop.setAttribute("k", "discrete")
+        discrete_prop.setAttribute("v", "0")
+        ramp_type_prop = base.xml_document.createElement("prop")
+        ramp_type_prop.setAttribute("k", "rampType")
+        ramp_type_prop.setAttribute("v", "gradient")
+
+        colorramp_element.appendChild(color1_prop)
+        colorramp_element.appendChild(color2_prop)
+        colorramp_element.appendChild(stops_prop)
+        colorramp_element.appendChild(discrete_prop)
+        colorramp_element.appendChild(ramp_type_prop)
+
+        colorrampshader_element.appendChild(colorramp_element)
+
+        color_stops = color_ramp_properties["dict_symbols"]["stops"].split(":")
+        for index, color in enumerate(color_stops[:-1]):
+            position_double, color_value = color.split(";")
+            item_element = base.xml_document.createElement("item")
+            color_value_hex = convert_rgb_string_to_hex(color_value)
+            item_element.setAttribute("color", color_value_hex)
+            item_element.setAttribute("alpha", color_value[-3:])
+            value = unicode(255*float(position_double)) if index < len(color_stops) else u"255"
+            item_element.setAttribute("value", value)
+            item_element.setAttribute("label", value)
+            colorrampshader_element.appendChild(item_element)
+
+    @staticmethod
+    def _get_band_stats(arc_raster):
+        arc_raster = change_interface(arc_raster, ArcGisModules.module_data_source_raster.IRaster2)
+        arc_raster_dataset = change_interface(arc_raster.RasterDataset, ArcGisModules.module_gdb.IRasterDataset)
+        arc_raster_band_collection = change_interface(
+            arc_raster_dataset,
+            ArcGisModules.module_data_source_raster.IRasterBandCollection
+        )
+
+        bandstats = {}
+
+        for x in range(1, arc_raster_band_collection.Count + 1):
+            raster_band = arc_raster_band_collection.BandByName("Band_" + str(x))
+            try:
+                band_minimum = raster_band.Statistics.Minimum
+                band_maximum = raster_band.Statistics.Maximum
+            except ValueError:
+                band_minimum = 0
+                band_maximum = 255
+
+            bandstats.update(
+                {x:
+                    {
+                        "min": unicode(int(band_minimum)),
+                        "max": unicode(int(band_maximum)),
+                    }
+                }
+            )
+
+        return bandstats
