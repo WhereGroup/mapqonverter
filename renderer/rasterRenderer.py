@@ -41,6 +41,30 @@ class RasterRenderer:
         raster_transparency_element = base.xml_document.createElement("rasterTransparency")
         raster_renderer_element.appendChild(raster_transparency_element)
 
+        raster_stretch = change_interface(arc_raster_layer.Renderer, ArcGisModules.module_carto.IRasterStretch2)
+
+        if raster_stretch and raster_stretch.Background and raster_stretch.BackgroundColor.NullColor:
+                values = raster_stretch.BackgroundValue
+                if isinstance(values, float):
+                    single_value_pixel_element = base.xml_document.createElement("singleValuePixelList")
+                    raster_transparency_element.appendChild(single_value_pixel_element)
+                    pixel_list_entry_element = base.xml_document.createElement("pixelListEntry")
+                    single_value_pixel_element.appendChild(pixel_list_entry_element)
+                    pixel_list_entry_element.setAttribute("min", unicode(int(values)))
+                    pixel_list_entry_element.setAttribute("max", unicode(int(values)))
+                    pixel_list_entry_element.setAttribute("percentTransparent", "100")
+                else:
+                    single_value_pixel_element = base.xml_document.createElement("threeValuePixelList")
+                    raster_transparency_element.appendChild(single_value_pixel_element)
+                    pixel_list_entry_element = base.xml_document.createElement("pixelListEntry")
+                    single_value_pixel_element.appendChild(pixel_list_entry_element)
+                    pixel_list_entry_element.setAttribute("red", unicode(int(values[0])))
+                    pixel_list_entry_element.setAttribute("green", unicode(int(values[1])))
+                    pixel_list_entry_element.setAttribute("blue", unicode(int(values[2])))
+                    pixel_list_entry_element.setAttribute("percentTransparent", "100")
+
+
+
         min_max_origin_element = base.xml_document.createElement("minMaxOrigin")
         raster_renderer_element.appendChild(min_max_origin_element)
 
