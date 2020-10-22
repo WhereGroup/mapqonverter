@@ -40,6 +40,8 @@ class LayoutItemPropertiesProvider:
                 layout_item_type = u'North Arrow'
             if scale_bar:
                 layout_item_type = u'Scale Bar'
-        if layout_item_type == u'Datenrahmen':
+        map_item = change_interface(layout_item, ArcGisModules.module_carto.IMapFrame)
+        if map_item:
             layout_item_type = u'Data Frame'
+
         return layout_item_type

@@ -123,6 +123,8 @@ class LayoutItem:
             if self.compare_layout_items(element, arc_object_item, properties, filter_type):
                 arcpy_item = element
                 break
+
+        arcpy.AddMessage("Creating {} Element".format("unnamed" if arcpy_item.name == "" else arcpy_item.name))
         return arcpy_item
 
     @staticmethod
@@ -136,69 +138,99 @@ class LayoutItem:
         :return: Boolean if the arcpy item is the same as the compared ArcObject
         """
         result = False
-        i_element = change_interface(arc_object_item, ArcGisModules.module_carto.IElement)
-
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
                 and arcpy_object.text == arc_object_item.Text \
-                and LayoutItem.compare_position(arcpy_object, i_element, is_text_element=True):
+                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
             result = True
         elif filter_type == 'DATAFRAME_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, i_element):
+                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
             result = True
         elif filter_type == 'LEGEND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, i_element)\
+                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'MAPSURROUND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, i_element) \
+                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'GRAPHIC_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, i_element):
+                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, i_element)\
+                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
                 and arcpy_object.sourceImage[-3:] in arc_object_item.Filter:
             result = True
 
         return result
 
     @staticmethod
-    def compare_position(arcpy_object, i_element, is_text_element=False):
+    def compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
         """
-        Compares the the ArcObject with the Arcpy Layoutitem depending on the layout position
+        Compares the the ArcObject with the Arcpy Layoutitem depending on the position in the layout
         :param arcpy_object: the arcpy object of the layoutitem
-        :param i_element: the arcobject element of the layoutitem
-        :param is_text_element: Boolean indicates if element is text-element - default False
+        :param arc_object_item: the arcobject element of the layoutitem
+        :param arc_object_item_properties: the properties of the arcobject element
         """
-
-        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
+        i_element = change_interface(arc_object_item, ArcGisModules.module_carto.IElement)
         result = False
 
-        # The Arcpy Text-Element has another default anchor-point than the arcObject,
-        # because of that the comparison is so weird
+        try:
+            border_gap = arc_object_item.Border.Gap * 0.352778
+        except (AttributeError, ValueError):
+            border_gap = 0
 
-        if is_text_element:
-            if is_close((arcpy_object.elementPositionY * convert_unit_factor)
-                        + (arcpy_object.elementHeight * convert_unit_factor),
-                        i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
-                and is_close((arcpy_object.elementPositionX * convert_unit_factor)
-                             + (arcpy_object.elementWidth * convert_unit_factor / 2),
-                             i_element.Geometry.Envelope.XMin, abs_tol=15):
-                result = True
-        if is_close(arcpy_object.elementPositionY * convert_unit_factor,
-                    i_element.Geometry.Envelope.YMin, abs_tol=0.20) \
-            and is_close(arcpy_object.elementPositionX * convert_unit_factor,
-                         i_element.Geometry.Envelope.XMin, abs_tol=0.20):
+        item_anchor_point = arc_object_item_properties.AnchorPoint
+
+        anchor_point_list = LayoutItem.get_anchorpoint_list(item_anchor_point, arcpy_object)
+
+        if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
+                    anchor_point_list[item_anchor_point][0], abs_tol=0.1) and \
+                is_close(i_element.Geometry.Envelope.Ymin - border_gap,
+                         anchor_point_list[item_anchor_point][1], abs_tol=0.1):
             result = True
+        # If the given anchorpoint, does not work - text-items have a default anchorpoint for example
+        # Check for given coordinates in the whole anchorpoint-list/raster
+        else:
+            for coordinate_pair in anchor_point_list:
+                if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
+                            coordinate_pair[0], abs_tol=0.1) and \
+                        is_close(i_element.Geometry.Envelope.Ymin - border_gap,
+                                 coordinate_pair[1], abs_tol=0.1):
+                    result = True
+                    break
 
         return result
+
+    @staticmethod
+    def get_anchorpoint_list(anchorpoint, arcpy_object):
+        """
+        Here the different anchorpoints for an item will be generated
+        :param anchorpoint: the anchorpoint of the layout-item
+        :param arcpy_object: the arcpy_object of the layou-item
+        :return: a list of the 9 possible anchorpoints
+        """
+        width = arcpy_object.elementWidth
+        height = arcpy_object.elementHeight
+        anchorpoint_position_x = arcpy_object.elementPositionX
+        anchorpoint_position_y = arcpy_object.elementPositionY
+
+        grid_position_y_anchorpoint = int(float(anchorpoint / 3))
+        grid_position_x_anchorpoint = anchorpoint % 3
+
+        array_list = []
+
+        for index_1 in range(0, 3):
+            for index_2 in range(0, 3):
+                array_list.append([anchorpoint_position_x + (index_2 - grid_position_x_anchorpoint) * (width / 2),
+                                   anchorpoint_position_y + (index_1 - grid_position_y_anchorpoint) * -(height / 2)])
+
+        return array_list
 
     @staticmethod
     def get_label_font_description(font_symbol):
@@ -294,8 +326,8 @@ class LayoutItem:
         for index in range(0, point_collection.PointCount):
             point = point_collection.Point[index]
             y_coordinate = page_heigth - point.Y - (
-                        page_heigth - arcpy_item.elementPositionY * convert_unit_factor
-                        - arcpy_item.elementHeight * convert_unit_factor
+                    page_heigth - arcpy_item.elementPositionY * convert_unit_factor
+                    - arcpy_item.elementHeight * convert_unit_factor
             )
             node_element = self.dom.createElement('node')
             node_element.setAttribute('x', unicode(point.X - arcpy_item.elementPositionX * convert_unit_factor))

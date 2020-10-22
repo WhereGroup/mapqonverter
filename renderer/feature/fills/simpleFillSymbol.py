@@ -41,8 +41,11 @@ class FeatureSimpleFillSymbol:
         if fill_symbol.Outline:
             simple_outline = change_interface(fill_symbol.Outline, ArcGisModules.module_display.ISimpleLineSymbol)
             if simple_outline:
-                symbol_properties['dict_symbols']['outline_style'] = \
-                    SingleSymbol.simple_line_style_dict[simple_outline.Style]
+                if fill_symbol.Outline.Color.NullColor:
+                    symbol_properties['dict_symbols']['outline_style'] = "no"
+                else:
+                    symbol_properties['dict_symbols']['outline_style'] = \
+                        SingleSymbol.simple_line_style_dict[simple_outline.Style]
             symbol_properties['dict_symbols']['outline_color'] = convert_int_to_rgb_string(fill_symbol.Outline.Color.RGB)
             symbol_properties['dict_symbols']['outline_width'] = fill_symbol.Outline.Width
 

@@ -35,10 +35,7 @@ class Renderer:
         elif self.rendererType == "gdb":
             NullRenderer.create_null_symbol_renderer(self)
             LabelRenderer.create_labels(self, self.map_layer_element,
-                                        label_dict=LabelRenderer.get_label_dict(
-                                                base=self,
-                                                renderer_type=self.rendererType
-                                                )
+                                        label_dict=LabelRenderer.get_label_dict(base=self)
                                         )
             arcpy.AddWarning(
                 "\t\tLabels have been converted. Complex Labeling is not supported. Check QGIS-File for result!"

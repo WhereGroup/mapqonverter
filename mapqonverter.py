@@ -35,7 +35,7 @@ def main():
     qgs_file_name = u"{}.qgs".format(export_name_short)
     qgs_file = codecs.open(qgs_file_name, "w", encoding="utf-8")
 
-    Logger.get_logger(export_name_short)
+    logging = Logger.get_logger(export_name_short)
 
     xml_document = Document()
 
@@ -87,6 +87,7 @@ def main():
     VisibilityPresets.initialize_visibility(xml_document, header, mxd)
 
     arcpy.AddMessage("Creating Layout")
+    logging.info("Creating Layout")
     layout = Layout(xml_document, header, arc_doc, mxd).create_layout()
 
     arcpy.AddMessage("Creating Metadata")

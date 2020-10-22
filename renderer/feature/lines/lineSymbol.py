@@ -69,10 +69,11 @@ class LineSymbol:
         LineSymbol.create_line_properties(i_symbol, symbol_properties)
 
         basic_line_symbol = change_interface(i_symbol, ArcGisModules.module_display.ILineSymbol)
+        if basic_line_symbol.Color.NullColor:
+            symbol_properties['dict_symbols']['line_style'] = 'no'
         try:
             layer_color = convert_int_to_rgb_string(basic_line_symbol.Color.RGB)
         except ValueError:
-            symbol_properties['dict_symbols']['line_style'] = 'no'
             layer_color = '0,0,0,255'
             arcpy.AddWarning(
                 "\t\tError occured while rendering color. Default color is none."

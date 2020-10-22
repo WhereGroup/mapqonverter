@@ -18,6 +18,6 @@ class RasterLayer:
         for datasource, provider in zip(map_layer_element.getElementsByTagName('datasource'),
                                         map_layer_element.getElementsByTagName('provider')):
             provider.appendChild(base.xml_document.createTextNode("gdal"))
-            datasource.appendChild(base.xml_document.createTextNode(str(base.layer.dataSource)))
+            datasource.appendChild(base.xml_document.createTextNode(unicode(base.layer.dataSource)))
 
         rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "raster").get_renderer()
