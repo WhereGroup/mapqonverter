@@ -264,7 +264,8 @@ class LayoutItem:
 
         layout_item_base_element.setAttribute("size", "{width},{height},{units}".format(
             height=arcpy_item.elementHeight * convert_unit_factor,
-            width=arcpy_item.elementWidth * convert_unit_factor,
+            width=arcpy_item.elementWidth + 1 * convert_unit_factor if arcpy_item.type == 'TEXT_ELEMENT'
+            else arcpy_item.elementWidth * convert_unit_factor,
             units=target_unit),
                                               )
         layout_item_base_element.setAttribute("position", "{pos_x},{pos_y},{units}".format(
