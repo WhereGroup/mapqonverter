@@ -132,13 +132,13 @@ class Layout:
             scale_bar_basic_layout = scale_bar_item.create_layout_item_basic()
             scale_bar_item.create_scale_bar_content(scale_bar_basic_layout)
 
-        elif layout_item_type in ['Rectangle', 'Ellipse', 'Circle']:
+        elif layout_item_type in ['Rectangle', 'Ellipse', 'Circle', 'Rechteck', 'Kreis']:
             fill_symbol_element = change_interface(layout_item, ArcGisModules.module_carto.IFillShapeElement)
             geometry_element = GeometryElement(self.dom, layout_element_dom, fill_symbol_element, self.mxd, self.arc_doc)
             geometry_element_layout = geometry_element.create_layout_item_basic()
             geometry_element.create_geometry_element_content(geometry_element_layout, layout_item_type)
 
-        elif layout_item_type == 'Line':
+        elif layout_item_type == 'Line' or 'Linie':
             line_symbol = change_interface(layout_item, ArcGisModules.module_carto.ILineElement)
             line_element = LineElement(self.dom, layout_element_dom, line_symbol, self.mxd, self.arc_doc)
             line_element_layout = line_element.create_layout_item_basic()
@@ -150,7 +150,7 @@ class Layout:
             polygon_element_layout = polygon_element.create_layout_item_basic()
             polygon_element.create_geometry_element_content(polygon_element_layout)
 
-        elif layout_item_type == 'Picture':
+        elif layout_item_type == 'Picture' or 'Bild':
             picture_element_arc = change_interface(layout_item, ArcGisModules.module_carto.IPictureElement3)
             picture_element = PictureElement(self.dom, layout_element_dom, picture_element_arc, self.mxd, self.arc_doc)
             picture_element_layout = picture_element.create_layout_item_basic()
