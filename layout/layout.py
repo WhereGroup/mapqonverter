@@ -48,9 +48,14 @@ class Layout:
             try:
                 item_type = LayoutItemPropertiesProvider.get_layout_item_type(item)
                 Layout.create_item_content(self, item_type, item, layout_element_dom)
-            except (KeyError, Exception):
+            except (KeyError, Exception) as error:
                 item_properties = change_interface(item, ArcGisModules.module_carto.IElementProperties3)
-                logging.error(u"Error while exporting {} - type: {}".format(item_properties.Name, item_properties.Type))
+                logging.error(u"Error while exporting {} - type: {}".format(
+                    item_properties.Name,
+                    item_properties.Type
+                ))
+                logging.error(error.message)
+                logging.exception(error)
                 continue
 
         self.arc_doc.PageLayout.Page.Units = UnitProvider.get_origin_unit()
