@@ -1,4 +1,7 @@
+import random
+
 import arcpy
+from comtypes.client import CreateObject
 
 from modules.arcGisModules import ArcGisModules
 from modules.functions import change_interface, convert_int_to_rgb_string
@@ -65,16 +68,46 @@ class FeatureGradientFillSymbol:
         colors = []
         algorithmic_color_map = change_interface(ramp, ArcGisModules.module_display.IAlgorithmicColorRamp)
         preset_color_ramp = change_interface(ramp, ArcGisModules.module_display.IPresetColorRamp)
+        random_color_ramp = change_interface(ramp, ArcGisModules.module_display.IRandomColorRamp)
         if algorithmic_color_map:
             colors.append(algorithmic_color_map.FromColor)
             colors.append(algorithmic_color_map.ToColor)
         elif preset_color_ramp:
-            print preset_color_ramp.NumberOfPresetColors
             for colorNumber in range(preset_color_ramp.NumberOfPresetColors):
                 colors.append(preset_color_ramp.PresetColor[colorNumber])
+        elif random_color_ramp:
+            for color in range(0, 13):
+                hsv_color_object = CreateObject(ArcGisModules.module_display.HsvColor,
+                                                interface=ArcGisModules.module_display.IHsvColor)
+
+                if random_color_ramp.StartHue > random_color_ramp.EndHue:
+                    random_hue1 = random.randint(0, random_color_ramp.EndHue)
+                    random_hue2 = random.randint(random_color_ramp.StartHue, 360)
+                    random_hue = random.choice([random_hue1, random_hue2])
+                else:
+                    random_hue = random.randint(random_color_ramp.StartHue, random_color_ramp.EndHue)
+
+                hsv_color_object.Hue = random_hue
+                random_saturation = random.randint(random_color_ramp.MinSaturation, random_color_ramp.MaxSaturation)
+                hsv_color_object.Saturation = random_saturation
+                random_value = random.randint(random_color_ramp.MinValue, random_color_ramp.MaxValue)
+                hsv_color_object.Value = random_value
+
+                colors.append(hsv_color_object)
         else:
             for colorNumber in range(ramp.Size):
                 colors.append(ramp.Color[colorNumber])
+
+        if len(colors) == 0:
+            rgb_color_object_1 = CreateObject(ArcGisModules.module_display.RgbColor,
+                                              interface=ArcGisModules.module_display.IColor)
+            rgb_color_object_1.RGB = 16777215
+            colors.append(rgb_color_object_1)
+
+            rgb_color_object_2 = CreateObject(ArcGisModules.module_display.RgbColor,
+                                              interface=ArcGisModules.module_display.IColor)
+            rgb_color_object_2.RGB = 0
+            colors.append(rgb_color_object_2)
 
         return colors
 
@@ -114,7 +147,9 @@ class FeatureGradientFillSymbol:
                 if color == colors[-1] and ramp_number == multi_gradient_fill.NumberOfRamps:
                     symbol_properties['dict_symbols']['color2'] = convert_int_to_rgb_string(color.RGB)
 
-            symbol_properties['dict_symbols']['stops'] += "{};{}:".format(color_range, convert_int_to_rgb_string(color.RGB))
+            symbol_properties['dict_symbols']['stops'] += "{};{}:".format(color_range,
+                                                                          convert_int_to_rgb_string(color.RGB)
+                                                                          )
 
             if color in colors[:-1]:
                 color_range += step_size
@@ -131,8 +166,8 @@ class FeatureGradientFillSymbol:
     def write_solo_gradient_colors_in_dict(color_ramp, radial_fill, symbol_properties):
         """This writes the the color-range of the used color-ramp of a multi_gradient_fill_symbol
 
-        :param color_ramp: The usedcolor_ramp
-        :param radial_fill: This declares if the gradient has a radial fill
+        :param color_ramp: The Color Ramp Symbol
+        :param radial_fill: This declares if the gradient has a radial fill - boolean
         :param symbol_properties: symbol_properties as dictionary
         """
         colors = FeatureGradientFillSymbol.get_colors_from_ramp(color_ramp)
@@ -149,16 +184,23 @@ class FeatureGradientFillSymbol:
         symbol_properties['dict_symbols']['color1'] = color1
         symbol_properties['dict_symbols']['color2'] = color2
         symbol_properties['dict_symbols']['gradient_color2'] = color2
-        symbol_properties['dict_symbols']['color_type'] = "0"
+
+        random_color_ramp = change_interface(color_ramp, ArcGisModules.module_display.IRandomColorRamp)
+        if random_color_ramp:
+            symbol_properties['dict_symbols']['discrete'] = "1"
+        else:
+            symbol_properties['dict_symbols']['color_type'] = "0"
         color_range = 0.0
-        if color_ramp.Size == 0:
+        if color_ramp.Size == 0 and not random_color_ramp:
             step_size = 0.5
         else:
             step_size = 1.0 / len(colors)
         if radial_fill:
             colors.reverse()
         for colorNumber, color in enumerate(colors):
-            symbol_properties['dict_symbols']['stops'] += "{};{}".format(color_range, convert_int_to_rgb_string(color.RGB))
+            symbol_properties['dict_symbols']['stops'] += "{};{}".format(color_range,
+                                                                         convert_int_to_rgb_string(color.RGB)
+                                                                         )
             if colorNumber != len(colors):
                 symbol_properties['dict_symbols']['stops'] += ":"
             color_range += step_size
