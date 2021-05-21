@@ -127,8 +127,7 @@ class LayoutItem:
         arcpy.AddMessage("Creating {} Element".format("unnamed" if arcpy_item.name == "" else arcpy_item.name))
         return arcpy_item
 
-    @staticmethod
-    def compare_layout_items(arcpy_object, arc_object_item, arc_object_item_properties, filter_type):
+    def compare_layout_items(self, arcpy_object, arc_object_item, arc_object_item_properties, filter_type):
         """
         This function compares an arcObject item with an arcpy item depending from type-specific properties
         :param arcpy_object: an arcpy item to compare with
@@ -141,36 +140,35 @@ class LayoutItem:
         if filter_type == 'TEXT_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
                 and arcpy_object.text == arc_object_item.Text \
-                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
+                and self.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
             result = True
         elif filter_type == 'DATAFRAME_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
+                and self.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
             result = True
         elif filter_type == 'LEGEND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
+                and self.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'MAPSURROUND_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
+                and self.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
                 and arcpy_object.parentDataFrameName == arc_object_item.MapSurround.Map.Name:
             result = True
         elif filter_type == 'GRAPHIC_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
+                and self.compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
             result = True
         elif filter_type == 'PICTURE_ELEMENT' \
                 and arcpy_object.name == arc_object_item_properties.Name \
-                and LayoutItem.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
+                and self.compare_position(arcpy_object, arc_object_item, arc_object_item_properties) \
                 and arcpy_object.sourceImage[-3:] in arc_object_item.Filter:
             result = True
 
         return result
 
-    @staticmethod
-    def compare_position(arcpy_object, arc_object_item, arc_object_item_properties):
+    def compare_position(self, arcpy_object, arc_object_item, arc_object_item_properties):
         """
         Compares the the ArcObject with the Arcpy Layoutitem depending on the position in the layout
         :param arcpy_object: the arcpy object of the layoutitem
@@ -187,7 +185,7 @@ class LayoutItem:
 
         item_anchor_point = arc_object_item_properties.AnchorPoint
 
-        anchor_point_list = LayoutItem.get_anchorpoint_list(item_anchor_point, arcpy_object)
+        anchor_point_list = self.get_anchorpoint_list(item_anchor_point, arcpy_object)
 
         if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
                     anchor_point_list[item_anchor_point][0], abs_tol=0.1) and \
@@ -207,8 +205,7 @@ class LayoutItem:
 
         return result
 
-    @staticmethod
-    def get_anchorpoint_list(anchorpoint, arcpy_object):
+    def get_anchorpoint_list(self, anchorpoint, arcpy_object):
         """
         Here the different anchorpoints for an item will be generated
         :param anchorpoint: the anchorpoint of the layout-item
@@ -225,12 +222,28 @@ class LayoutItem:
 
         array_list = []
 
+        convert_unit_factor = self.get_convert_unit_factor()
+
         for index_1 in range(0, 3):
             for index_2 in range(0, 3):
-                array_list.append([anchorpoint_position_x + (index_2 - grid_position_x_anchorpoint) * (width / 2),
-                                   anchorpoint_position_y + (index_1 - grid_position_y_anchorpoint) * -(height / 2)])
+                array_list.append([(anchorpoint_position_x + (index_2 - grid_position_x_anchorpoint) * (width / 2)) * convert_unit_factor,
+                                   (anchorpoint_position_y + (index_1 - grid_position_y_anchorpoint) * -(height / 2)) * convert_unit_factor])
 
         return array_list
+
+    def get_convert_unit_factor(self):
+        arcpy_page_size = self.mxd.pageSize.height
+        arc_object_page_size = self.arc_doc.PageLayout.Page.PrintableBounds.Height
+
+        convert_unit_factor = 1
+        if is_close(arcpy_page_size * 10, arc_object_page_size, abs_tol=0.1):
+            convert_unit_factor = 10
+        elif is_close(arcpy_page_size * 0.352778, arc_object_page_size, abs_tol=0.1):
+            convert_unit_factor = 0.352778
+        elif is_close(arcpy_page_size * 0.0393701, arc_object_page_size, abs_tol=0.1):
+            convert_unit_factor = 0.0393701
+
+        return convert_unit_factor
 
     @staticmethod
     def get_label_font_description(font_symbol):
@@ -258,13 +271,14 @@ class LayoutItem:
         """
         target_unit = dict_units[self.arc_doc.PageLayout.Page.Units]
 
-        convert_unit_factor = UnitProvider.get_unit_conversion_factor()
+        convert_unit_factor = self.get_convert_unit_factor()
 
         page_heigth = self.arc_doc.PageLayout.Page.PrintableBounds.Height
 
         layout_item_base_element.setAttribute("size", "{width},{height},{units}".format(
             height=arcpy_item.elementHeight * convert_unit_factor,
-            width=arcpy_item.elementWidth * convert_unit_factor,
+            width=arcpy_item.elementWidth + 1 * convert_unit_factor if arcpy_item.type == 'TEXT_ELEMENT'
+            else arcpy_item.elementWidth * convert_unit_factor,
             units=target_unit),
                                               )
         layout_item_base_element.setAttribute("position", "{pos_x},{pos_y},{units}".format(
