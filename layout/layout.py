@@ -143,7 +143,7 @@ class Layout:
             geometry_element_layout = geometry_element.create_layout_item_basic()
             geometry_element.create_geometry_element_content(geometry_element_layout, layout_item_type)
 
-        elif layout_item_type == 'Line' or 'Linie':
+        elif layout_item_type in ['Line', 'Linie']:
             line_symbol = change_interface(layout_item, ArcGisModules.module_carto.ILineElement)
             line_element = LineElement(self.dom, layout_element_dom, line_symbol, self.mxd, self.arc_doc)
             line_element_layout = line_element.create_layout_item_basic()
@@ -155,7 +155,7 @@ class Layout:
             polygon_element_layout = polygon_element.create_layout_item_basic()
             polygon_element.create_geometry_element_content(polygon_element_layout)
 
-        elif layout_item_type == 'Picture' or 'Bild':
+        elif layout_item_type in ['Picture', 'Bild']:
             picture_element_arc = change_interface(layout_item, ArcGisModules.module_carto.IPictureElement3)
             picture_element = PictureElement(self.dom, layout_element_dom, picture_element_arc, self.mxd, self.arc_doc)
             picture_element_layout = picture_element.create_layout_item_basic()
