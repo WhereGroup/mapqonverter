@@ -4,7 +4,7 @@ class SimpleSymbol:
         pass
 
     @staticmethod
-    def create_simple_symbol(xml_document, symbols_element, properties, count, alpha):
+    def create_simple_symbol(xml_document, symbols_element, properties, count, alpha, tags=None):
         """ This write all properties of a simple symbol in the symbol_element in the DOM
 
         :param xml_document: is the DOM
@@ -12,12 +12,15 @@ class SimpleSymbol:
         :param properties: the symbol properties as dictionary
         :param count: the number of the symbol (just interesting for the naming)
         :param alpha: the transparency level
+        :param tags: The tags as String - just used for style-file issues,
         """
         symbol_element = xml_document.createElement("symbol")
         symbol_element.setAttribute("alpha", alpha)
         symbol_element.setAttribute("clip_to_extent", "1")
         symbol_element.setAttribute("type", properties['symbol_type'])
-        symbol_element.setAttribute("name", str(count))
+        symbol_element.setAttribute("name", unicode(count))
+        if tags and len(tags) > 0:
+            symbol_element.setAttribute("tags", tags)
         symbols_element.appendChild(symbol_element)
 
         for layer in reversed(properties['layer']):
