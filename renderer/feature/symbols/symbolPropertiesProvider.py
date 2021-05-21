@@ -139,3 +139,19 @@ class SymbolPropertiesProvider:
             symbol_collection.append(multilayer_symbol.Layer[x])
         return symbol_collection
 
+    @staticmethod
+    def get_symbol_properties_by_symbol_class(symbol_properties, i_symbol, symbol_class):
+        """ This function returns the properties of a symbol depending the symbol class
+
+        :param symbol_properties: a dictionary to write the properties into
+        :param i_symbol: the Symbol-Object itself
+        :param symbol_class: the class (Fill, Line or Marker) as String
+        """
+
+        symbol_dict = {
+            "Fill Symbols": SymbolPropertiesProvider.get_polygon_properties,
+            "Line Symbols": SymbolPropertiesProvider.get_line_properties,
+            "Marker Symbols": SymbolPropertiesProvider.get_point_properties
+        }
+
+        symbol_dict[symbol_class](symbol_properties, i_symbol)
