@@ -27,6 +27,9 @@ def main():
     """ This is the main script to convert a ArcMap-Project"""
     export_name = arcpy.GetParameterAsText(0)
 
+    if not export_name:
+        export_name = "C:\\temp\\test.qgs"
+
     if export_name.endswith(".qgs") or export_name.endswith(".qgz"):
         export_name_short = export_name[:-4]
     else:
@@ -84,7 +87,8 @@ def main():
         LayerTree.create_layertree(xml_document, header, layer_list, dataframe)
         MapProperties.create_map_properties_element(xml_document, header)
 
-    VisibilityPresets.initialize_visibility(xml_document, header, mxd)
+    if len(arcpy.mapping.ListDataFrames(mxd)) > 1:
+        VisibilityPresets.initialize_visibility(xml_document, header, mxd)
 
     arcpy.AddMessage("Creating Layout")
     logging.info("Creating Layout")
