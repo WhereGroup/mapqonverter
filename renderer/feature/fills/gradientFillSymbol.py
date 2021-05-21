@@ -207,6 +207,13 @@ class FeatureGradientFillSymbol:
 
     @staticmethod
     def create_color_ramp_properties(color_ramp, radial_fill, symbol_properties):
+        """ This add the properties of the color ramp to a dictionary and returns it
+
+        :param color_ramp: The Color Ramp Symbol
+        :param radial_fill: This declares if the gradient has a radial fill - boolean
+        :param symbol_properties: symbol_properties as dictionary
+        :return: adapted symbol properties
+        """
         multi_gradient_fill = change_interface(color_ramp, ArcGisModules.module_display.IMultiPartColorRamp)
 
         symbol_properties['dict_symbols']['stops'] = ""
