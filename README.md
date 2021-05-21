@@ -1,6 +1,8 @@
-# Mapqonverter
-The Mapqonverter converts an ArcMap Project to a QGIS Project.
+# MapQonverter
+The MapQonverter converts an ArcMap Project to a QGIS Project.
 The script is inspired by Mxd2Qgs from Allan Maungu.
+
+System Requirements: at least ArcMap 10.4. While ArcMap 10.7 is fully tested
 
 ## Installation
 
