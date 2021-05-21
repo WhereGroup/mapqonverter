@@ -1,3 +1,5 @@
+import arcpy
+
 from modules.arcGisModules import ArcGisModules
 from modules.functions import change_interface
 from renderer.feature.fills.gradientFillSymbol import FeatureGradientFillSymbol
@@ -12,7 +14,7 @@ from renderer.feature.symbols.simpleMarkerSymbol import SimpleMarkerSymbol
 class SymbolPropertiesProvider:
     def __init__(self):
         pass
-    
+
     @staticmethod
     def get_polygon_properties(symbol_properties, i_symbol):
         """ This function collects all properties of the polygon symbol
@@ -31,6 +33,7 @@ class SymbolPropertiesProvider:
                 line_fill_symbol = change_interface(symbol, ArcGisModules.module_display.ILineFillSymbol)
                 marker_fill_symbol = change_interface(symbol, ArcGisModules.module_display.IMarkerFillSymbol)
                 gradient_fill_symbol = change_interface(symbol, ArcGisModules.module_display.IGradientFillSymbol)
+                picture_fill_symbol = change_interface(symbol, ArcGisModules.module_display.IPictureFillSymbol)
 
                 outline = change_interface(symbol.Outline, ArcGisModules.module_display.ILineSymbol)
 
@@ -53,6 +56,8 @@ class SymbolPropertiesProvider:
                     symbol_properties['layer'].append(
                         FeatureGradientFillSymbol.create_feature_gradient_fill_symbol(gradient_fill_symbol)
                     )
+                elif picture_fill_symbol:
+                    arcpy.AddMessage("Picture Fills are not supported yet.")
                 else:
                     symbol_properties['layer'].append(FeatureSimpleFillSymbol.create_feature_simple_fill_symbol(symbol))
 
@@ -106,11 +111,14 @@ class SymbolPropertiesProvider:
 
             for symbol in symbol_collection:
                 font_marker = change_interface(symbol, ArcGisModules.module_display.ICharacterMarkerSymbol)
+                picture_marker = change_interface(symbol, ArcGisModules.module_display.IPictureMarkerSymbol)
 
                 if font_marker:
                     symbol_properties['layer'].append(
                         CharacterMarkerSymbol.create_character_marker_symbol(font_marker)
                     )
+                elif picture_marker:
+                    arcpy.AddMessage("Picture Marker are not supported yet.")
                 else:
                     symbol_properties['layer'].append(
                         SimpleMarkerSymbol.create_simple_marker_symbol(symbol)
