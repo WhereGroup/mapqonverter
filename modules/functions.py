@@ -2,8 +2,16 @@ import _ctypes
 import arcpy
 
 
-def is_close(a, b, rel_tol=1e-9, abs_tol=0.0):
-    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+def is_close(float1, float2, relative_tolerance=1e-9, absolute_tolerance=0.0):
+    """ This is a comparison for floats and taken from Python 3.5
+
+    :param float1: Float - Value 1
+    :param float2: Float - Value 1
+    :param relative_tolerance: the relative tolerance in nano
+    :param absolute_tolerance: minimum absolute tolerance
+    :return: boolean
+    """
+    return abs(float1 - float2) <= max(relative_tolerance * max(abs(float1), abs(float2)), absolute_tolerance)
 
 
 def convert_rgb_string_to_hex(rgb_string):

@@ -188,18 +188,18 @@ class LayoutItem:
         anchor_point_list = self.get_anchorpoint_list(item_anchor_point, arcpy_object)
 
         if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
-                    anchor_point_list[item_anchor_point][0], abs_tol=0.1) and \
+                    anchor_point_list[item_anchor_point][0], absolute_tolerance=0.1) and \
                 is_close(i_element.Geometry.Envelope.Ymin - border_gap,
-                         anchor_point_list[item_anchor_point][1], abs_tol=0.1):
+                         anchor_point_list[item_anchor_point][1], absolute_tolerance=0.1):
             result = True
         # If the given anchorpoint, does not work - text-items have a default anchorpoint for example
         # Check for given coordinates in the whole anchorpoint-list/raster
         else:
             for coordinate_pair in anchor_point_list:
                 if is_close(i_element.Geometry.Envelope.Xmin - border_gap,
-                            coordinate_pair[0], abs_tol=0.1) and \
+                            coordinate_pair[0], absolute_tolerance=0.1) and \
                         is_close(i_element.Geometry.Envelope.Ymin - border_gap,
-                                 coordinate_pair[1], abs_tol=0.1):
+                                 coordinate_pair[1], absolute_tolerance=0.1):
                     result = True
                     break
 
@@ -236,11 +236,11 @@ class LayoutItem:
         arc_object_page_size = self.arc_doc.PageLayout.Page.PrintableBounds.Height
 
         convert_unit_factor = 1
-        if is_close(arcpy_page_size * 10, arc_object_page_size, abs_tol=0.1):
+        if is_close(arcpy_page_size * 10, arc_object_page_size, absolute_tolerance=0.1):
             convert_unit_factor = 10
-        elif is_close(arcpy_page_size * 0.352778, arc_object_page_size, abs_tol=0.1):
+        elif is_close(arcpy_page_size * 0.352778, arc_object_page_size, absolute_tolerance=0.1):
             convert_unit_factor = 0.352778
-        elif is_close(arcpy_page_size * 0.0393701, arc_object_page_size, abs_tol=0.1):
+        elif is_close(arcpy_page_size * 0.0393701, arc_object_page_size, absolute_tolerance=0.1):
             convert_unit_factor = 0.0393701
 
         return convert_unit_factor

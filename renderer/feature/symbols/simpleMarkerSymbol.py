@@ -37,24 +37,30 @@ class SimpleMarkerSymbol:
                 symbol_simple_marker.Style]
             if symbol_simple_marker.Outline:
                 symbol_properties['dict_symbols']['outline_style'] = "solid"
-                symbol_properties['dict_symbols']['outline_color'] = convert_int_to_rgb_string(symbol_simple_marker.OutlineColor.RGB)
+                symbol_properties['dict_symbols']['outline_color'] = convert_int_to_rgb_string(
+                    symbol_simple_marker.OutlineColor.RGB
+                )
                 symbol_properties['dict_symbols']['outline_width'] = symbol_simple_marker.OutlineSize
             else:
                 symbol_properties['dict_symbols']['outline_style'] = "no"
             symbol_properties['dict_symbols']['offset'] = str(symbol_simple_marker.XOffset) + "," + str(
                 symbol_simple_marker.YOffset)
 
-        symbol_properties['dict_symbols']['angle'] = symbol_marker.Angle
+        try:
+            symbol_properties['dict_symbols']['angle'] = symbol_marker.Angle
+            symbol_properties['dict_symbols']['size'] = symbol_marker.Size
+        except AttributeError:
+            symbol_properties['dict_symbols']['angle'] = "0"
+            symbol_properties['dict_symbols']['size'] = "1"
+
         try:
             layer_color = convert_int_to_rgb_string(symbol_marker.Color.RGB)
             if symbol_marker.Color.NullColor:
                 symbol_properties['dict_symbols']['style'] = "no"
-        except ValueError:
+        except (ValueError, AttributeError):
             layer_color = '0,0,0,255'
             arcpy.AddWarning("\t\tThere was an Error coloring the Layer. Default Color is black.")
 
         symbol_properties['dict_symbols']['color'] = layer_color
-
-        symbol_properties['dict_symbols']['size'] = symbol_marker.Size
 
         return symbol_properties
