@@ -15,7 +15,7 @@ labelDict = {
                                    'textColor': '80,189,228,255',
                                    'namedStyle': 'Bold',
                                    'fontWeight': '75',
-                                   'previewBkgrdColor': '#fffff',
+                                   'previewBkgrdColor': '255,255,255,255',
                                    'fontSizeUnit': 'Point',
                                    'fontFamily': 'Arial',
                                    'textOpacity': '1',
