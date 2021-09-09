@@ -27,10 +27,15 @@ class FeatureLayer:
             provider.setAttribute("encoding", "UTF-8")
             provider.appendChild(base.xml_document.createTextNode("ogr"))
             if ".gdb" in base.gdb_path:
-                datasource_path = '|layername='.join(unicode(base.layer.dataSource.rsplit('\\', 1)))
-                datasource.appendChild(base.xml_document.createTextNode(datasource_path))
+                datasource_path = base.gdb_path
+
+                geo_data_base_name = datasource_path.split("\\")[-2]
+                geo_data_base_layer_name = datasource_path.split("\\")[-1]
+                ds = base.xml_document.createTextNode(
+                    "./" + geo_data_base_name + "|layername=" + geo_data_base_layer_name)
+                datasource.appendChild(ds)
             else:
-                datasource.appendChild(base.xml_document.createTextNode(unicode(base.layer.dataSource)))
+                datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
             if len(base.layer.definitionQuery) > 0:
                 datasource.firstChild.nodeValue = datasource.firstChild.nodeValue + "|layerid=0|subset=" \
                                                   + base.layer.definitionQuery
