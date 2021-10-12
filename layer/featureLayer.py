@@ -1,4 +1,5 @@
 import arcpy
+from gdbFilePathProvider import GdbFilePathProvider
 from renderer.renderer import Renderer as rendererObj
 from renderer.labelRenderer import LabelRenderer
 
@@ -16,7 +17,6 @@ class FeatureLayer:
         :param base: Is the self from the LayerObject
         :param map_layer_element: the maplayer_element in the DOM
         """
-        # logging.info('Feature Layer saved')
         geometry1 = arcpy.Describe(base.layer)
         geometry2 = str(geometry1.shapeType)
         map_layer_element.setAttribute("type", "vector")
@@ -27,10 +27,12 @@ class FeatureLayer:
             provider.setAttribute("encoding", "UTF-8")
             provider.appendChild(base.xml_document.createTextNode("ogr"))
             if ".gdb" in base.gdb_path:
-                datasource_path = '|layername='.join(unicode(base.layer.dataSource.rsplit('\\', 1)))
-                datasource.appendChild(base.xml_document.createTextNode(datasource_path))
+                absolute_path_to_gdb_layer = base.gdb_path
+                layer_path = GdbFilePathProvider.create_layer_path_from_gdb_path(absolute_path_to_gdb_layer)
+                datasource_content = base.xml_document.createTextNode(layer_path)
+                datasource.appendChild(datasource_content)
             else:
-                datasource.appendChild(base.xml_document.createTextNode(unicode(base.layer.dataSource)))
+                datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
             if len(base.layer.definitionQuery) > 0:
                 datasource.firstChild.nodeValue = datasource.firstChild.nodeValue + "|layerid=0|subset=" \
                                                   + base.layer.definitionQuery
