@@ -1,3 +1,4 @@
+from gdbFilePathProvider import GdbFilePathProvider
 from renderer.renderer import Renderer as rendererObj
 
 
@@ -21,11 +22,9 @@ class GDBAnnotationLayer:
                                         map_layer_element.getElementsByTagName('provider')):
             provider.setAttribute("encoding", "UTF-8")
             provider.appendChild(base.xml_document.createTextNode("ogr"))
-            datasource_path = base.gdb_path
-
-            geo_data_base_name = datasource_path.split("\\")[-2]
-            geo_data_base_layer_name = datasource_path.split("\\")[-1]
-            ds = base.xml_document.createTextNode("./" + geo_data_base_name + "|layername=" + geo_data_base_layer_name)
-            datasource.appendChild(ds)
+            absolute_path_to_gdb_layer = base.gdb_path
+            layer_path = GdbFilePathProvider.create_layer_path_from_gdb_path(absolute_path_to_gdb_layer)
+            datasource_content = base.xml_document.createTextNode(layer_path)
+            datasource.appendChild(datasource_content)
     
         rendererObj(base.xml_document, map_layer_element, base.arc_layer, base.layer, "gdb").get_renderer()
