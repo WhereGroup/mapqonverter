@@ -32,7 +32,7 @@ class FeatureLayer:
                 datasource_content = base.xml_document.createTextNode(layer_path)
                 datasource.appendChild(datasource_content)
             else:
-                datasource.appendChild(base.xml_document.createTextNode(base.layer.dataSource))
+                datasource.appendChild(base.xml_document.createTextNode(unicode(base.layer.dataSource)))
             if len(base.layer.definitionQuery) > 0:
                 datasource.firstChild.nodeValue = datasource.firstChild.nodeValue + "|layerid=0|subset=" \
                                                   + base.layer.definitionQuery
